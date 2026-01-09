@@ -1,0 +1,135 @@
+﻿#include "platform.h"
+#include <algorithm>
+
+Platform::Platform(const Mesh& m)
+	: mesh(m),
+	position(0.0f),
+	rotation(0.0f),
+	scale(1.0f)
+{
+	computeMeshBounds();
+}
+
+void Platform::computeMeshBounds()
+{
+	if (mesh.vertices.empty())
+	{
+		meshMin = glm::vec3(-0.5f);
+		meshMax = glm::vec3(0.5f);
+		return;
+	}
+
+	meshMin = mesh.vertices[0].pos;
+	meshMax = mesh.vertices[0].pos;
+
+	for (const auto& v : mesh.vertices)
+	{
+		meshMin.x = std::min(meshMin.x, v.pos.x);
+		meshMin.y = std::min(meshMin.y, v.pos.y);
+		meshMin.z = std::min(meshMin.z, v.pos.z);
+
+		meshMax.x = std::max(meshMax.x, v.pos.x);
+		meshMax.y = std::max(meshMax.y, v.pos.y);
+		meshMax.z = std::max(meshMax.z, v.pos.z);
+	}
+}
+
+glm::mat4 Platform::getModelMatrix() const
+{
+	glm::mat4 model(1.0f);
+	model = glm::translate(model, position);
+	model = glm::rotate(model, glm::radians(rotation.y), glm::vec3(0, 1, 0));
+	model = glm::rotate(model, glm::radians(rotation.x), glm::vec3(1, 0, 0));
+	model = glm::rotate(model, glm::radians(rotation.z), glm::vec3(0, 0, 1));
+	model = glm::scale(model, scale);
+	return model;
+}
+
+void Platform::draw(Shader& shader, const glm::mat4& view, const glm::mat4& projection) const
+{
+	shader.use();
+	GLuint MatrixID = glGetUniformLocation(shader.getId(), "MVP");
+	GLuint ModelMatrixID = glGetUniformLocation(shader.getId(), "model");
+
+	glm::mat4 model = getModelMatrix();
+	glm::mat4 MVP = projection * view * model;
+
+	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+	glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &model[0][0]);
+
+	mesh.draw(shader);
+}
+
+void Platform::getWorldAABB(glm::vec3& outMin, glm::vec3& outMax) const
+{
+	// Transform the 8 corners of the mesh AABB and compute world min/max.
+	glm::mat4 model = getModelMatrix();
+
+	glm::vec3 corners[8];
+	corners[0] = glm::vec3(meshMin.x, meshMin.y, meshMin.z);
+	corners[1] = glm::vec3(meshMax.x, meshMin.y, meshMin.z);
+	corners[2] = glm::vec3(meshMin.x, meshMax.y, meshMin.z);
+	corners[3] = glm::vec3(meshMax.x, meshMax.y, meshMin.z);
+	corners[4] = glm::vec3(meshMin.x, meshMin.y, meshMax.z);
+	corners[5] = glm::vec3(meshMax.x, meshMin.y, meshMax.z);
+	corners[6] = glm::vec3(meshMin.x, meshMax.y, meshMax.z);
+	corners[7] = glm::vec3(meshMax.x, meshMax.y, meshMax.z);
+
+	glm::vec3 wmin(std::numeric_limits<float>::infinity());
+	glm::vec3 wmax(-std::numeric_limits<float>::infinity());
+
+	for (int i = 0; i < 8; ++i)
+	{
+		glm::vec4 wc = model * glm::vec4(corners[i], 1.0f);
+		wmin.x = std::min(wmin.x, wc.x);
+		wmin.y = std::min(wmin.y, wc.y);
+		wmin.z = std::min(wmin.z, wc.z);
+
+		wmax.x = std::max(wmax.x, wc.x);
+		wmax.y = std::max(wmax.y, wc.y);
+		wmax.z = std::max(wmax.z, wc.z);
+	}
+
+	outMin = wmin;
+	outMax = wmax;
+}
+
+bool Platform::resolvePoint(glm::vec3& point, float eyeHeight) const
+{
+	glm::vec3 minW, maxW;
+	getWorldAABB(minW, maxW);
+
+	// Check XZ overlap (point projection on XZ plane)
+	bool insideXZ = (point.x >= minW.x && point.x <= maxW.x) &&
+		(point.z >= minW.z && point.z <= maxW.z);
+
+	if (!insideXZ) return false;
+
+	float topY = maxW.y;
+	float bottomY = minW.y;
+	float allowedTopY = topY + eyeHeight;
+
+	const float collisionMargin = 2.0f;
+
+	// Collision with TOP of platform (landing on it from above)
+	if (point.y >= topY  && point.y < allowedTopY)
+	{
+
+		point.y = allowedTopY;
+		return true;
+	}
+
+	// Collision with BOTTOM of platform (hitting ceiling from below)
+	if (point.y <= bottomY + collisionMargin && point.y > bottomY - eyeHeight)
+	{
+		point.y = bottomY - eyeHeight;
+		return true;
+	}
+	//Collision with SIDE of platform
+	if (point.y >= bottomY && point.y <= topY) {
+		point.x = (point.x < (minW.x + maxW.x) / 2) ? minW.x - collisionMargin : maxW.x + collisionMargin; 
+		return true;
+	}
+
+	return false;
+}
