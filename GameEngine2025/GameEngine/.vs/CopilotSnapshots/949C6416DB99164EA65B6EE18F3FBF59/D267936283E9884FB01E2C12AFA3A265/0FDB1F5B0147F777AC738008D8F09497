@@ -1,0 +1,48 @@
+﻿#pragma once
+#include "../Model Loading/mesh.h"
+#include "../Shaders/shader.h"
+#include "../Algorithms/collision.h"
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <vector>
+
+class Platform : public ICollidable
+{
+private:
+	Mesh mesh;
+	glm::vec3 position;
+	glm::vec3 rotation; // Euler degrees
+	glm::vec3 scale;
+	bool collisionEnabled;
+	std::string name; // Platform name for debug
+
+	// mesh-space bounds (computed once)
+	glm::vec3 meshMin;
+	glm::vec3 meshMax;
+
+	void computeMeshBounds();
+	glm::mat4 getModelMatrix() const;
+
+public:
+	Platform(const Mesh& mesh, const char* platformName = "Platform");
+	
+	void setPosition(const glm::vec3& p) { position = p; }
+	void setRotation(const glm::vec3& r) { rotation = r; }
+	void setScale(const glm::vec3& s) { scale = s; }
+	void setName(const char* n) { name = n; }
+	
+	glm::vec3 getPosition() const { return position; }
+	glm::vec3 getRotation() const { return rotation; }
+	glm::vec3 getScale() const { return scale; }
+
+	// Enable/disable collision for this platform
+	void setCollisionEnabled(bool enabled) { collisionEnabled = enabled; }
+
+	// Draw using provided view/projection matrices (keeps main.cpp clean)
+	void draw(Shader& shader, const glm::mat4& view, const glm::mat4& projection) const;
+
+	// ICollidable interface implementation
+	void getWorldAABB(glm::vec3& outMin, glm::vec3& outMax) const override;
+	bool isCollisionEnabled() const override { return collisionEnabled; }
+	const char* getName() const override { return name.c_str(); }
+};

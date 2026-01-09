@@ -1,0 +1,45 @@
+#pragma once
+
+#include <glm.hpp>
+#include <gtx\transform.hpp>
+#include <gtc\matrix_transform.hpp>
+#include <gtc\type_ptr.hpp>
+#include "..\Graphics\window.h"
+
+class Camera
+{
+private:
+	glm::vec3 cameraPosition;
+	glm::vec3 cameraViewDirection;
+	glm::vec3 cameraUp;
+	glm::vec3 cameraRight;
+
+	float rotationOx;  // Pitch (up/down)
+	float rotationOy;  // Yaw (left/right)
+
+public:
+	Camera();
+	Camera(glm::vec3 cameraPosition);
+	Camera(glm::vec3 cameraPosition, glm::vec3 cameraViewDirection, glm::vec3 cameraUp);
+	~Camera();
+	glm::mat4 getViewMatrix();
+	glm::vec3 getCameraPosition();
+	glm::vec3 getCameraViewDirection();
+	glm::vec3 getCameraUp();
+
+	// small setter to allow external sync (e.g. camera-as-player)
+	void setCameraPosition(const glm::vec3& pos);
+
+	void keyboardMoveFront(float cameraSpeed);
+	void keyboardMoveBack(float cameraSpeed);
+	void keyboardMoveLeft(float cameraSpeed);
+	void keyboardMoveRight(float cameraSpeed);
+	void keyboardMoveUp(float cameraSpeed);
+	void keyboardMoveDown(float cameraSpeed);
+
+	void rotateOx(float angle);
+	void rotateOy(float angle);
+	
+	// Mouse look - takes delta movement and sensitivity
+	void mouseLook(float deltaX, float deltaY, float sensitivity = 0.1f);
+};

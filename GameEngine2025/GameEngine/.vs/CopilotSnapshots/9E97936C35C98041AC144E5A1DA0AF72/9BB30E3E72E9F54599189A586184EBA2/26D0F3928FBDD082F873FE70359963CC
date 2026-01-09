@@ -1,0 +1,42 @@
+﻿#pragma once
+#include "../Model Loading/mesh.h"
+#include "../Shaders/shader.h"
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <vector>
+
+class Platform
+{
+private:
+	Mesh mesh;
+	glm::vec3 position;
+	glm::vec3 rotation; // Euler degrees
+	glm::vec3 scale;
+
+	// mesh-space bounds (computed once)
+	glm::vec3 meshMin;
+	glm::vec3 meshMax;
+
+	void computeMeshBounds();
+	glm::mat4 getModelMatrix() const;
+
+public:
+	Platform(const Mesh& mesh);
+	void setPosition(const glm::vec3& p) { position = p; }
+	void setRotation(const glm::vec3& r) { rotation = r; }
+	void setScale(const glm::vec3& s) { scale = s; }
+
+	// Draw using provided view/projection matrices (keeps main.cpp clean)
+	void draw(Shader& shader, const glm::mat4& view, const glm::mat4& projection) const;
+
+	// World-space AABB
+	void getWorldAABB(glm::vec3& outMin, glm::vec3& outMax) const;
+
+	// Resolve point penetration against platform top.
+	// If point is horizontally over platform and below top + eyeHeight,
+	// this moves point.y up to top + eyeHeight and returns true.
+	// New API: provide the previous point so we only clamp when the
+	// point was above the platform before the move (prevents
+	// teleporting from underneath to the top).
+	bool resolvePoint(glm::vec3& point, const glm::vec3& prevPoint, float eyeHeight) const;
+};
