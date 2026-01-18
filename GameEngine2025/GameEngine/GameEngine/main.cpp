@@ -9,7 +9,7 @@
 #include "Algorithms\physics.h"
 
 void processKeyboardInput();
-void resetPlayer();  // NEW: Forward declaration
+void resetPlayer();  
 
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
@@ -55,7 +55,7 @@ Platform* spike3 = nullptr;
 
 // eye height above player's origin
 const float PLAYER_EYE_HEIGHT = 1.0f;
-//Player pos : (223.20, 1.02, -121.86),
+
 int main()
 {
 	glClearColor(0.2f, 0.8f, 1.0f, 1.0f);
@@ -66,11 +66,11 @@ int main()
 
 	//Textures
 	GLuint tex = loadBMP("Resources/Textures/wood.bmp");
-	GLuint tex2 = loadBMP("Resources/Textures/fence.bmp");
-	GLuint tex3 = loadBMP("Resources/Textures/mars.bmp");
-	GLuint tex4 = loadBMP("Resources/Textures/platform.bmp"); 
-	GLuint tex5 = loadBMP("Resources/Textures/rockwall.bmp");
-	GLuint tex6 = loadBMP("Resources/Textures/spikes.bmp"); // NEW: Load spike texture
+	GLuint tex2 = loadBMP("Resources/Textures/fence.bmp"); // fence texture
+	GLuint tex3 = loadBMP("Resources/Textures/mars.bmp"); // ground tex
+	GLuint tex4 = loadBMP("Resources/Textures/platform.bmp"); // platform tex
+	GLuint tex5 = loadBMP("Resources/Textures/rockwall.bmp"); // moutain tex
+	GLuint tex6 = loadBMP("Resources/Textures/spikes.bmp");  // spike tex
 
 	glEnable(GL_DEPTH_TEST);
 
@@ -179,7 +179,7 @@ int main()
 
 
 	fence = new Platform(fenceMesh, "fence");
-	fence->setPosition(glm::vec3(60.0f, 0.0f, -200.0f));
+	fence->setPosition(glm::vec3(60.0f, -1.0f, -200.0f));
 	fence->setScale(glm::vec3(175.0f, 25.0f, 20.0f));
 
 
@@ -402,9 +402,11 @@ int main()
 	delete spike3;
 	spike3 = nullptr;
 }
+
+//basically game loop input processing
 void processKeyboardInput()
 {
-	// Toggle cursor lock with TAB key
+	// lock cursor in window with tab key 
 	static bool tabWasPressed = false;
 	bool tabPressed = window.isPressed(GLFW_KEY_TAB);
 	if (tabPressed && !tabWasPressed)
@@ -413,7 +415,7 @@ void processKeyboardInput()
 	}
 	tabWasPressed = tabPressed;
 	
-	// Mouse look (only when cursor is locked)
+	// mouse look
 	if (window.isCursorLocked())
 	{
 		double deltaX, deltaY;
@@ -422,7 +424,7 @@ void processKeyboardInput()
 		window.resetMouseDelta();
 	}
 
-	// Reset player position when P is pressed
+	// debug : reset player position with P key
 	static bool pWasPressed = false;
 	bool pPressed = window.isPressed(GLFW_KEY_P);
 	if (pPressed && !pWasPressed)
@@ -435,10 +437,10 @@ void processKeyboardInput()
 	// Get current position
 	glm::vec3 currentPos = camera.getCameraPosition();
 
-	// Calculate movement direction based on input
+	// calculate movement direction based on input
 	glm::vec3 moveDirection(0.0f);
 
-	// Get forward/right vectors (horizontal only)
+	// get forward and right vectors from camera (ignore y component for movement)
 	glm::vec3 forward = camera.getCameraViewDirection();
 	forward.y = 0.0f;
 	if (glm::length(forward) > 0.0001f) forward = glm::normalize(forward);
@@ -500,13 +502,16 @@ void processKeyboardInput()
 		}
 		else if (info.face == CollisionManager::ContactFace::Bottom)
 		{
+			// Only call ceiling collision for actual ceiling hits
 			playerPhysics.onCeilingCollision();
 		}
-		else
+
+		// For ANY collision (including side walls), check if we're still on ground
+		// This is crucial - wall collisions should NOT break ground contact!
+		if (!groundContactThisFrame)
 		{
-			// Side collision - check if we're still on ground
 			glm::vec3 probePos = proposed;
-			probePos.y -= 0.2f;
+			probePos.y -= 0.3f;
 
 			if (collisionManager.resolvePointAgainstAll(probePos, PLAYER_EYE_HEIGHT))
 			{
@@ -515,12 +520,18 @@ void processKeyboardInput()
 				{
 					groundContactThisFrame = true;
 					playerPhysics.isGrounded = true;
+					// Also reset vertical velocity when confirmed on ground
+					if (playerPhysics.velocity.y < 0.0f)
+					{
+						playerPhysics.velocity.y = 0.0f;
+					}
 				}
 			}
 		}
 	}
 	else
 	{
+		// No collision - check if we're still on ground (edge detection)
 		if (playerPhysics.isGrounded && playerPhysics.velocity.y <= 0.1f)
 		{
 			glm::vec3 probePos = proposed;
@@ -556,5 +567,5 @@ void resetPlayer()
 	camera.setCameraPosition(SPAWN_POSITION);
 	playerPhysics.reset();
 }
-// NEW: Reset player function
+
 

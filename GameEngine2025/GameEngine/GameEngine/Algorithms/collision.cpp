@@ -165,8 +165,8 @@ bool CollisionManager::resolvePointAgainstAABB(const glm::vec3& minW, const glm:
 
     // Case 1: Landing on TOP of platform
     // Player feet are penetrating from above
-    if (insideXZ && feetY < topY && headY > topY)
-    {
+    if (insideXZ && feetY < topY + collisionMargin && headY > topY + collisionMargin)
+    { 
         point.y = topY + eyeHeight + collisionMargin;
         outFace = ContactFace::Top;
         return true;
