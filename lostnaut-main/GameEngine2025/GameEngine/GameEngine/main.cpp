@@ -17,17 +17,21 @@ int heldItemID = 0;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-bool isNearItem = false; // To know if we should show the "Press E" message
+bool isNearItem = false;
 
 Window window("Game Engine", 800, 800);
 Camera camera;
 
 glm::vec3 lightColor = glm::vec3(1.0f);
 glm::vec3 lightPos = glm::vec3(0.0f, 300.0f, -300.0f);
-// Store the positions of the items (we need these as variables now so they can change)
-glm::vec3 plantPos = glm::vec3(10.0f, 3.0f, 10.0f);
-glm::vec3 coinPos = glm::vec3(-15.0f, 2.0f, 5.0f);
-glm::vec3 treatPos = glm::vec3(0.0f, 3.0f, 15.0f);
+
+// Item Positions
+// UPDATED: plantPos Y increased by 20 (28.52 -> 48.52)
+glm::vec3 plantPos = glm::vec3(-93.14f, 62.0f, -193.34f);
+glm::vec3 coinPos = glm::vec3(6.33f, 3.5f, -406.48f);
+glm::vec3 treatPos = glm::vec3(105.08f, 50.74f, -199.93f);
+// Spaceship Position
+glm::vec3 spaceshipPos = glm::vec3(-30.0f, 10.0f, -30.0f);
 
 CollisionManager collisionManager;
 PlayerPhysics playerPhysics;
@@ -41,6 +45,7 @@ Platform* platform3 = nullptr;
 Platform* platform4 = nullptr;
 Platform* platform5 = nullptr;
 Platform* platform6 = nullptr;
+Platform* plantPlatform = nullptr; // NEW: Platform for the elevated plant
 Platform* fence = nullptr;
 Platform* mountain1 = nullptr;
 Platform* mountain2 = nullptr;
@@ -51,6 +56,7 @@ Platform* mountain6 = nullptr;
 Platform* spike1 = nullptr;
 Platform* spike2 = nullptr;
 Platform* spike3 = nullptr;
+Platform* spaceshipPlatform = nullptr;
 
 const float PLAYER_EYE_HEIGHT = 1.0f;
 
@@ -61,7 +67,7 @@ int main()
 	Shader shader("Shaders/vertex_shader.glsl", "Shaders/fragment_shader.glsl");
 	Shader sunShader("Shaders/sun_vertex_shader.glsl", "Shaders/sun_fragment_shader.glsl");
 
-	// Teammates' Textures
+	// Textures
 	GLuint tex = loadBMP("Resources/Textures/wood.bmp");
 	GLuint tex2 = loadBMP("Resources/Textures/fence.bmp");
 	GLuint tex3 = loadBMP("Resources/Textures/mars.bmp");
@@ -69,11 +75,11 @@ int main()
 	GLuint tex5 = loadBMP("Resources/Textures/rockwall.bmp");
 	GLuint tex6 = loadBMP("Resources/Textures/spikes.bmp");
 
-	// YOUR Textures
 	GLuint texPlant = loadBMP("Resources/Textures/Plant_BaseColor.bmp");
 	GLuint texCoin = loadBMP("Resources/Textures/GoldColor.bmp");
 	GLuint texTreat = loadBMP("Resources/Textures/TreatTex.bmp");
 	GLuint texPressE = loadBMP("Resources/Textures/PressE.bmp");
+	GLuint texSpaceship = loadBMP("Resources/Textures/spaceship_texture.bmp");
 
 	glEnable(GL_DEPTH_TEST);
 	window.lockCursor(true);
@@ -86,11 +92,11 @@ int main()
 	std::vector<Texture> textures5; textures5.push_back({ tex5, "texture_diffuse" });
 	std::vector<Texture> texturesSpike; texturesSpike.push_back({ tex6, "texture_diffuse" });
 
-	// YOUR Texture Vectors
 	std::vector<Texture> texturesPlant; texturesPlant.push_back({ texPlant, "texture_diffuse" });
 	std::vector<Texture> texturesCoin; texturesCoin.push_back({ texCoin, "texture_diffuse" });
 	std::vector<Texture> texturesTreat; texturesTreat.push_back({ texTreat, "texture_diffuse" });
 	std::vector<Texture> texturesPressE; texturesPressE.push_back({ texPressE, "texture_diffuse" });
+	std::vector<Texture> texturesSpaceship; texturesSpaceship.push_back({ texSpaceship, "texture_diffuse" });
 
 	MeshLoaderObj loader;
 	Mesh sun = loader.loadObj("Resources/Models/sphere.obj");
@@ -101,12 +107,12 @@ int main()
 	Mesh mountainMesh = loader.loadObj("Resources/Models/Rockwall.obj", textures5);
 	Mesh spikeMesh = loader.loadObj("Resources/Models/spikes.obj", texturesSpike);
 
-	// YOUR Models
 	Mesh plantModel = loader.loadObj("Resources/Models/Plant.obj", texturesPlant);
 	Mesh marioCoin = loader.loadObj("Resources/Models/MarioCoin.obj", texturesCoin);
 	Mesh dogTreat = loader.loadObj("Resources/Models/DogTreat.obj", texturesTreat);
+	Mesh spaceshipModel = loader.loadObj("Resources/Models/spaceship.obj", texturesSpaceship);
 
-	// Platform Init
+	// Platforms Init
 	g_platform = new Platform(plane, "Ground");
 	g_platform->setPosition(glm::vec3(0.0f, 1.0f, 0.0f));
 	g_platform->setScale(glm::vec3(300.0f, 2.0f, 1000.0f));
@@ -117,6 +123,11 @@ int main()
 	platform4 = new Platform(platformMesh, "P4"); platform4->setPosition(glm::vec3(9.0f, 50.0f, -150.0f)); platform4->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
 	platform5 = new Platform(platformMesh, "P5"); platform5->setPosition(glm::vec3(110.0f, 30.0f, -260.0f)); platform5->setScale(glm::vec3(13.0f, 10.0f, 13.0f));
 	platform6 = new Platform(platformMesh, "P6"); platform6->setPosition(glm::vec3(76.0f, 20.0f, -242.0f)); platform6->setScale(glm::vec3(13.0f, 10.0f, 13.0f));
+
+	// NEW: Plant Platform initialization
+	plantPlatform = new Platform(platformMesh, "PlantPlatform");
+	plantPlatform->setPosition(glm::vec3(-93.14f, 60.0f, -193.34f)); // 1 unit below the plant
+	plantPlatform->setScale(glm::vec3(10.0f, 5.0f, 10.0f));
 
 	fence = new Platform(fenceMesh, "fence"); fence->setPosition(glm::vec3(60.0f, 0.0f, -200.0f)); fence->setScale(glm::vec3(175.0f, 25.0f, 20.0f));
 
@@ -131,34 +142,34 @@ int main()
 	spike2 = new Platform(spikeMesh, "S2"); spike2->setPosition(glm::vec3(37.0f, 42.0f, -115.0f)); spike2->setScale(glm::vec3(5.0f, 5.0f, 5.0f)); spike2->setIsHazard(true);
 	spike3 = new Platform(spikeMesh, "S3"); spike3->setPosition(glm::vec3(9.0f, 49.0f, -196.0f)); spike3->setScale(glm::vec3(5.0f, 5.0f, 5.0f)); spike3->setIsHazard(true);
 
+	// Spaceship as a Platform for Collision
+	spaceshipPlatform = new Platform(spaceshipModel, "Spaceship");
+	spaceshipPlatform->setPosition(spaceshipPos);
+	spaceshipPlatform->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
+	spaceshipPlatform->setUseOBBCollision(true);
+
 	collisionManager.addCollidable(g_platform);
 	collisionManager.addCollidable(platform1); collisionManager.addCollidable(platform2); collisionManager.addCollidable(platform3);
 	collisionManager.addCollidable(platform4); collisionManager.addCollidable(platform5); collisionManager.addCollidable(platform6);
+	collisionManager.addCollidable(plantPlatform); // NEW: Register collision
 	collisionManager.addCollidable(fence);
 	collisionManager.addCollidable(mountain1); collisionManager.addCollidable(mountain2); collisionManager.addCollidable(mountain3);
 	collisionManager.addCollidable(mountain4); collisionManager.addCollidable(mountain5); collisionManager.addCollidable(mountain6);
 	collisionManager.addCollidable(spike1); collisionManager.addCollidable(spike2); collisionManager.addCollidable(spike3);
+	collisionManager.addCollidable(spaceshipPlatform);
 
 	collisionManager.setCollisionMargin(0);
 	collisionManager.setDebugOutput(false);
 
-
-
-	// --- Interaction HUD Setup ---
+	// HUD Setup
 	std::vector<Vertex> hudVerts;
 	std::vector<int> hudIndices = { 0, 1, 2, 0, 2, 3 };
-
-	// A tiny square (0.02 size)
 	Vertex v;
 	v.textureCoords = glm::vec2(0, 0); v.pos = glm::vec3(-0.02f, 0.02f, 0.0f); hudVerts.push_back(v);
 	v.textureCoords = glm::vec2(1, 0); v.pos = glm::vec3(0.02f, 0.02f, 0.0f); hudVerts.push_back(v);
 	v.textureCoords = glm::vec2(1, 1); v.pos = glm::vec3(0.02f, -0.02f, 0.0f); hudVerts.push_back(v);
 	v.textureCoords = glm::vec2(0, 1); v.pos = glm::vec3(-0.02f, -0.02f, 0.0f); hudVerts.push_back(v);
-
-	// Use a simple texture you already have (like the orange one) or a solid color
 	Mesh hudSquare(hudVerts, hudIndices, texturesPressE);
-
-
 
 	while (!window.isPressed(GLFW_KEY_ESCAPE) && glfwWindowShouldClose(window.getWindow()) == 0)
 	{
@@ -201,6 +212,7 @@ int main()
 		if (platform4) platform4->draw(shader, ViewMatrix, ProjectionMatrix);
 		if (platform5) platform5->draw(shader, ViewMatrix, ProjectionMatrix);
 		if (platform6) platform6->draw(shader, ViewMatrix, ProjectionMatrix);
+		if (plantPlatform) plantPlatform->draw(shader, ViewMatrix, ProjectionMatrix); // NEW: Draw call
 		if (fence) fence->draw(shader, ViewMatrix, ProjectionMatrix);
 		if (mountain1) mountain1->draw(shader, ViewMatrix, ProjectionMatrix);
 		if (mountain2) mountain2->draw(shader, ViewMatrix, ProjectionMatrix);
@@ -211,12 +223,10 @@ int main()
 		if (spike1) spike1->draw(shader, ViewMatrix, ProjectionMatrix);
 		if (spike2) spike2->draw(shader, ViewMatrix, ProjectionMatrix);
 		if (spike3) spike3->draw(shader, ViewMatrix, ProjectionMatrix);
+		if (spaceshipPlatform) spaceshipPlatform->draw(shader, ViewMatrix, ProjectionMatrix);
 
-		// --- YOUR ANIMATED ITEMS ---
-
-// --- 1. Plant ---
+		// --- Items ---
 		if (heldItemID == 1) {
-			// Draw in the corner of the screen (View Space)
 			ModelMatrix = glm::translate(glm::mat4(1.0), camera.getCameraPosition() + (camera.getCameraViewDirection() * 1.5f) - (camera.getCameraUp() * 0.5f) + (glm::cross(camera.getCameraViewDirection(), camera.getCameraUp()) * 0.8f));
 		}
 		else {
@@ -230,7 +240,6 @@ int main()
 		glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
 		plantModel.draw(shader);
 
-		// --- 2. Coin ---
 		if (heldItemID == 2) {
 			ModelMatrix = glm::translate(glm::mat4(1.0), camera.getCameraPosition() + (camera.getCameraViewDirection() * 1.5f) - (camera.getCameraUp() * 0.5f) + (glm::cross(camera.getCameraViewDirection(), camera.getCameraUp()) * 0.8f));
 		}
@@ -239,13 +248,12 @@ int main()
 			ModelMatrix = glm::translate(glm::mat4(1.0), coinPos + glm::vec3(0, coinWobble, 0));
 		}
 		ModelMatrix = glm::rotate(ModelMatrix, glm::radians(currentFrame * 150.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-		ModelMatrix = glm::scale(ModelMatrix, glm::vec3(10.0f, 10.0f, 10.0f));
+		ModelMatrix = glm::scale(ModelMatrix, glm::vec3(0.05f, 0.05f, 0.05f));
 		MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 		glUniformMatrix4fv(MatrixID2, 1, GL_FALSE, &MVP[0][0]);
 		glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
 		marioCoin.draw(shader);
 
-		// --- 3. Treat ---
 		if (heldItemID == 3) {
 			ModelMatrix = glm::translate(glm::mat4(1.0), camera.getCameraPosition() + (camera.getCameraViewDirection() * 1.5f) - (camera.getCameraUp() * 0.5f) + (glm::cross(camera.getCameraViewDirection(), camera.getCameraUp()) * 0.8f));
 		}
@@ -260,104 +268,89 @@ int main()
 		glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
 		dogTreat.draw(shader);
 
-
-
-
-
-
-
-		// --- RENDER HUD (CROSSHAIR) ---
+		// HUD
 		if (isNearItem && heldItemID == 0) {
 			glDisable(GL_DEPTH_TEST);
-			sunShader.use(); // Change from 'shader' to 'sunShader'
-
+			sunShader.use();
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, texPressE);
+			glUniform1i(glGetUniformLocation(sunShader.getId(), "texture_diffuse1"), 0);
 			glm::mat4 hudProj = glm::mat4(1.0);
 			glm::mat4 hudView = glm::mat4(1.0);
 			glm::mat4 hudModel = glm::mat4(1.0);
-
 			hudModel = glm::translate(hudModel, glm::vec3(0.0f, -0.8f, 0.0f));
 			hudModel = glm::scale(hudModel, glm::vec3(15.0f, 4.0f, 1.0f));
-
-			// sunShader uses "MVP" as the uniform name
 			GLuint hudMatrixID = glGetUniformLocation(sunShader.getId(), "MVP");
 			glm::mat4 hudMVP = hudProj * hudView * hudModel;
 			glUniformMatrix4fv(hudMatrixID, 1, GL_FALSE, &hudMVP[0][0]);
-
-			hudSquare.draw(sunShader); // Draw with sunShader
+			hudSquare.draw(sunShader);
 			glEnable(GL_DEPTH_TEST);
 		}
-
-
-
-
-
 		window.update();
 	}
 
 	collisionManager.clearAll();
 	delete g_platform; delete platform1; delete platform2; delete platform3;
-	delete platform4; delete platform5; delete platform6; delete fence;
+	delete platform4; delete platform5; delete platform6;
+	delete plantPlatform; // NEW: Cleanup
+	delete fence;
 	delete mountain1; delete mountain2; delete mountain3; delete mountain4;
 	delete mountain5; delete mountain6; delete spike1; delete spike2; delete spike3;
+	delete spaceshipPlatform;
 }
 
 void processKeyboardInput()
 {
-
-
-
-	// 1. Calculate distance to items
 	float distPlant = glm::distance(camera.getCameraPosition(), plantPos);
 	float distCoin = glm::distance(camera.getCameraPosition(), coinPos);
 	float distTreat = glm::distance(camera.getCameraPosition(), treatPos);
+	// Distance to spaceship
+	float distToShip = glm::distance(camera.getCameraPosition(), spaceshipPos);
 
-	float interactionDist = 5.0f; // How close you need to be
+	float interactionDist = 5.0f;
+	float shipDepositDist = 12.0f; // Slightly larger because the ship is big
+
 	isNearItem = (distPlant < interactionDist || distCoin < interactionDist || distTreat < interactionDist);
 
-	// 2. Handle Interaction (Press E)
 	static bool eWasPressed = false;
 	if (window.isPressed(GLFW_KEY_E) && !eWasPressed) {
-		if (heldItemID == 0) { // If empty handed, try to pick up
+		if (heldItemID == 0) {
 			if (distPlant < interactionDist) heldItemID = 1;
 			else if (distCoin < interactionDist) heldItemID = 2;
 			else if (distTreat < interactionDist) heldItemID = 3;
 		}
-		else { // If holding something, drop it
-			// 1. Calculate drop position in front of player
-			glm::vec3 dropPos = camera.getCameraPosition() + (camera.getCameraViewDirection() * 3.0f);
+		else {
+			// --- NEW DEPOSIT LOGIC ---
+			// Check if holding Plant or Coin AND near ship
+			if ((heldItemID == 1 || heldItemID == 2) && distToShip < shipDepositDist) {
+				// Move the "hidden" item under the map so it's effectively gone
+				if (heldItemID == 1) plantPos = glm::vec3(0, -500, 0);
+				if (heldItemID == 2) coinPos = glm::vec3(0, -500, 0);
 
-			// 2. Logic to prevent clipping:
-			// Teammates' ground is at Y=1.0. If camera Y is low, use a fixed safe height (3.5f)
-			// to account for the 2.0f wobble animation.
-			if (camera.getCameraPosition().y < 10.0f) {
-				dropPos.y = 2.5f;
+				heldItemID = 0; // Empty the player's hand
+				printf("Item deposited in spaceship!\n");
 			}
 			else {
-				// If on a high platform, drop it at your waist height
-				dropPos.y = camera.getCameraPosition().y - 0.5f;
+				// Normal drop logic for everything else (or if not near ship)
+				glm::vec3 dropPos = camera.getCameraPosition() + (camera.getCameraViewDirection() * 3.0f);
+				if (camera.getCameraPosition().y < 10.0f) dropPos.y = 2.5f;
+				else dropPos.y = camera.getCameraPosition().y - 0.5f;
+
+				if (heldItemID == 1) plantPos = dropPos;
+				if (heldItemID == 2) coinPos = dropPos;
+				if (heldItemID == 3) treatPos = dropPos;
+				heldItemID = 0;
 			}
-
-			// 3. Assign the new position to the specific item
-			if (heldItemID == 1) plantPos = dropPos;
-			if (heldItemID == 2) coinPos = dropPos;
-			if (heldItemID == 3) treatPos = dropPos;
-
-			heldItemID = 0; // Now empty handed
 		}
 	}
 	eWasPressed = window.isPressed(GLFW_KEY_E);
-
-
-
-
 
 	static bool tabWasPressed = false;
 	bool tabPressed = window.isPressed(GLFW_KEY_TAB);
 	if (tabPressed && !tabWasPressed) window.lockCursor(!window.isCursorLocked());
 	tabWasPressed = tabPressed;
 
-	if (window.isCursorLocked())
-	{
+	if (window.isCursorLocked()) {
 		double deltaX, deltaY;
 		window.getMouseDelta(deltaX, deltaY);
 		camera.mouseLook((float)deltaX, (float)deltaY, 0.1f);
@@ -392,8 +385,7 @@ void processKeyboardInput()
 	bool collided = collisionManager.resolvePointAgainstAll(proposed, PLAYER_EYE_HEIGHT);
 	bool groundContactThisFrame = false;
 
-	if (collided)
-	{
+	if (collided) {
 		const auto& info = collisionManager.getLastCollisionInfo();
 		Platform* hitPlatform = dynamic_cast<Platform*>(info.collidable);
 		if (hitPlatform && hitPlatform->getIsHazard()) { resetPlayer(); return; }
