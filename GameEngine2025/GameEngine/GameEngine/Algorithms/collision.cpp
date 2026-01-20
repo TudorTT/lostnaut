@@ -10,7 +10,7 @@ CollisionManager::CollisionManager()
 
 CollisionManager::~CollisionManager()
 {
-    // Don't delete collidables - we don't own them
+    // don't delete collidables - we don't own them
     collidables.clear();
 }
 
@@ -18,7 +18,7 @@ void CollisionManager::addCollidable(ICollidable* collidable)
 {
     if (collidable)
     {
-        // Avoid duplicates
+        // avoid duplicates
         auto it = std::find(collidables.begin(), collidables.end(), collidable);
         if (it == collidables.end())
         {
@@ -58,7 +58,7 @@ const char* CollisionManager::faceToString(ContactFace face)
 bool CollisionManager::resolvePointAgainstAll(glm::vec3& point, float eyeHeight)
 {
     bool anyResolved = false;
-    lastCollision = CollisionInfo(); // Reset last collision info
+    lastCollision = CollisionInfo(); // reset last collision info
 
     for (ICollidable* collidable : collidables)
     {
@@ -67,14 +67,14 @@ bool CollisionManager::resolvePointAgainstAll(glm::vec3& point, float eyeHeight)
             ContactFace face;
             bool collided = false;
 
-            // Use OBB collision if the object requests it
+            // use OBB collision if the object requests it
             if (collidable->usesOBBCollision())
             {
                 collided = resolvePointAgainstOBB(collidable, point, eyeHeight, face);
             }
             else
             {
-                // Use standard AABB collision
+                // use standard AABB collision
                 glm::vec3 minW, maxW;
                 collidable->getWorldAABB(minW, maxW);
                 collided = resolvePointAgainstAABB(minW, maxW, point, eyeHeight, face);
@@ -87,7 +87,7 @@ bool CollisionManager::resolvePointAgainstAll(glm::vec3& point, float eyeHeight)
                 lastCollision.face = face;
                 lastCollision.resolvedPosition = point;
 
-                // Print collision info if debug is enabled
+                // print collision info if debug is enabled
                 if (debugOutput)
                 {
                     printf("=== Collision with '%s' on %s face ===\n",
@@ -144,18 +144,18 @@ bool CollisionManager::resolvePointAgainstAABB(const glm::vec3& minW, const glm:
 {
     outFace = ContactFace::None;
 
-    // Player's feet position (point is eye position, feet are below by eyeHeight)
+    // player's feet position (point is eye position, feet are below by eyeHeight)
     float feetY = point.y - eyeHeight;
     float headY = point.y;
 
-    // First check if we're even near the AABB in XZ
+    // first check if we're even near the AABB in XZ
     bool nearX = (point.x >= minW.x - 1.0f && point.x <= maxW.x + 1.0f);
     bool nearZ = (point.z >= minW.z - 1.0f && point.z <= maxW.z + 1.0f);
 
     if (!nearX || !nearZ)
         return false;
 
-    // Check if player is within XZ bounds of the platform (with small tolerance)
+    // check if player is within XZ bounds of the platform (with small tolerance)
     bool insideX = (point.x >= minW.x && point.x <= maxW.x);
     bool insideZ = (point.z >= minW.z && point.z <= maxW.z);
     bool insideXZ = insideX && insideZ;
@@ -163,17 +163,17 @@ bool CollisionManager::resolvePointAgainstAABB(const glm::vec3& minW, const glm:
     float topY = maxW.y;
     float bottomY = minW.y;
 
-    // Case 1: Landing on TOP of platform
-    // Player feet are penetrating from above
+    // case 1: landing on TOP of platform
+    // player feet are penetrating from above
     if (insideXZ && feetY < topY + collisionMargin && headY > topY + collisionMargin)
-    { 
+    {
         point.y = topY + eyeHeight + collisionMargin;
         outFace = ContactFace::Top;
         return true;
     }
 
-    // Case 2: Hitting BOTTOM of platform (ceiling)
-    // Player head is penetrating from below
+    // case 2: hitting BOTTOM of platform (ceiling)
+    // player head is penetrating from below
     if (insideXZ && headY > bottomY && feetY < bottomY)
     {
         point.y = bottomY - collisionMargin;
@@ -181,18 +181,18 @@ bool CollisionManager::resolvePointAgainstAABB(const glm::vec3& minW, const glm:
         return true;
     }
 
-    // Case 3: SIDE collisions - only if we're at the right height
-    // Player is vertically aligned with the box
+    // case 3: SIDE collisions - only if we're at the right height
+    // player is vertically aligned with the box
     if (feetY < topY && headY > bottomY)
     {
-        // Check if we're penetrating in X or Z
+        // check if we're penetrating in X or Z
         bool penetratingX = insideX;
         bool penetratingZ = insideZ;
 
-        // Only resolve if we're penetrating on at least one axis
+        // only resolve if we're penetrating on at least one axis
         if (penetratingX && penetratingZ)
         {
-            // Inside on both axes - push out the shortest distance
+            // inside on both axes - push out the shortest distance
             float distLeft = point.x - minW.x;
             float distRight = maxW.x - point.x;
             float distBack = point.z - minW.z;
@@ -232,11 +232,11 @@ bool CollisionManager::resolvePointAgainstOBB(const ICollidable* collidable,
 {
     outFace = ContactFace::None;
 
-    // Get the model matrix and its inverse
+    // get the model matrix and its inverse
     glm::mat4 model = collidable->getModelMatrix();
     glm::mat4 invModel = glm::inverse(model);
 
-    // Transform player points to local space
+    // transform player points to local space
     glm::vec3 feetWorld = point - glm::vec3(0.0f, eyeHeight, 0.0f);
 
     glm::vec4 localPoint4 = invModel * glm::vec4(point, 1.0f);
@@ -245,17 +245,17 @@ bool CollisionManager::resolvePointAgainstOBB(const ICollidable* collidable,
     glm::vec3 localPoint(localPoint4.x, localPoint4.y, localPoint4.z);
     glm::vec3 localFeet(localFeet4.x, localFeet4.y, localFeet4.z);
 
-    // Get local bounds (unrotated mesh bounds)
+    // get local bounds (unrotated mesh bounds)
     glm::vec3 localMin, localMax;
     collidable->getLocalBounds(localMin, localMax);
 
-    // Quick rejection test - are we even near the object?
+    // quick rejection test - are we even near the object?
     float maxDist = glm::length(localMax - localMin) * 0.5f + 2.0f;
     glm::vec3 center = (localMin + localMax) * 0.5f;
     if (glm::length(localPoint - center) > maxDist)
         return false;
 
-    // Check XZ overlap in local space
+    // check XZ overlap in local space
     bool insideX = (localPoint.x >= localMin.x && localPoint.x <= localMax.x);
     bool insideZ = (localPoint.z >= localMin.z && localPoint.z <= localMax.z);
     bool insideXZ = insideX && insideZ;
@@ -269,24 +269,24 @@ bool CollisionManager::resolvePointAgainstOBB(const ICollidable* collidable,
     glm::vec3 resolvedLocal = localPoint;
     bool resolved = false;
 
-    // Case 1: Collision with TOP (landing on surface)
+    // case 1: collision with TOP (landing on surface)
     if (localFeet.y < topY && localPoint.y > topY)
     {
         resolvedLocal.y = topY + eyeHeight + collisionMargin;
         outFace = ContactFace::Top;
         resolved = true;
     }
-    // Case 2: Collision with BOTTOM (ceiling)
+    // case 2: collision with BOTTOM (ceiling)
     else if (localPoint.y > bottomY && localFeet.y < bottomY)
     {
         resolvedLocal.y = bottomY - collisionMargin;
         outFace = ContactFace::Bottom;
         resolved = true;
     }
-    // Case 3: Collision with SIDES
+    // case 3: collision with SIDES
     else if (localFeet.y < topY && localPoint.y > bottomY)
     {
-        // We're at the right height and inside XZ - must be a side collision
+        // we're at the right height and inside XZ - must be a side collision
         float distLeft = localPoint.x - localMin.x;
         float distRight = localMax.x - localPoint.x;
         float distBack = localPoint.z - localMin.z;
@@ -319,7 +319,7 @@ bool CollisionManager::resolvePointAgainstOBB(const ICollidable* collidable,
 
     if (resolved)
     {
-        // Transform resolved position back to world space
+        // transform resolved position back to world space
         glm::vec4 worldResolved = model * glm::vec4(resolvedLocal, 1.0f);
         point = glm::vec3(worldResolved.x, worldResolved.y, worldResolved.z);
     }

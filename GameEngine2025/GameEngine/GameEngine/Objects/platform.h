@@ -15,7 +15,8 @@ private:
 	glm::vec3 scale;
 	bool collisionEnabled;
 	bool useOBBCollision;
-	bool isHazard;  // NEW: If true, touching this resets the player
+	bool m_isHazard;  // renamed to avoid conflict with method
+	// easier to check if platform is hazzard in main game loop
 	std::string name;
 
 	glm::vec3 meshMin;
@@ -37,8 +38,8 @@ public:
 
 	void setCollisionEnabled(bool enabled) { collisionEnabled = enabled; }
 	void setUseOBBCollision(bool use) { useOBBCollision = use; }
-	void setIsHazard(bool hazard) { isHazard = hazard; }  // NEW
-	bool getIsHazard() const { return isHazard; }  // NEW
+	void setIsHazard(bool hazard) { m_isHazard = hazard; }
+	bool isHazard() const override { return m_isHazard; }
 
 	void draw(Shader& shader, const glm::mat4& view, const glm::mat4& projection) const;
 

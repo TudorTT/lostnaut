@@ -7,24 +7,32 @@
       "RelativeMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\collision.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\Algorithms\\collision.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Objects\\platform.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\Objects\\platform.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\physics.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\Algorithms\\physics.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Objects\\platform.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\Objects\\platform.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\physics.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\Algorithms\\physics.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\collision.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\Algorithms\\collision.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Objects\\platform.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\Objects\\platform.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+      "AbsoluteMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\collision.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\Algorithms\\collision.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Graphics\\window.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\Graphics\\window.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\physics.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|solutionrelative:GameEngine\\Algorithms\\physics.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{7DB4A041-6210-429F-8FF3-63462ADD6A69}|GameEngine\\GameEngine.vcxproj|C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Camera\\camera.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
@@ -62,8 +70,55 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 5,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "physics.h",
+              "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\physics.h",
+              "RelativeDocumentMoniker": "GameEngine\\Algorithms\\physics.h",
+              "ToolTip": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\physics.h",
+              "RelativeToolTip": "GameEngine\\Algorithms\\physics.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAQAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-01-20T17:35:37.496Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "platform.cpp",
+              "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Objects\\platform.cpp",
+              "RelativeDocumentMoniker": "GameEngine\\Objects\\platform.cpp",
+              "ToolTip": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Objects\\platform.cpp",
+              "RelativeToolTip": "GameEngine\\Objects\\platform.cpp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-01-20T17:14:15.002Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "collision.cpp",
+              "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\collision.cpp",
+              "RelativeDocumentMoniker": "GameEngine\\Algorithms\\collision.cpp",
+              "ToolTip": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\collision.cpp",
+              "RelativeToolTip": "GameEngine\\Algorithms\\collision.cpp",
+              "ViewState": "AgIAADcAAAAAAAAAAAAgwFQBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-01-09T11:47:10.049Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
@@ -72,14 +127,62 @@
               "RelativeDocumentMoniker": "GameEngine\\main.cpp",
               "ToolTip": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\main.cpp",
               "RelativeToolTip": "GameEngine\\main.cpp",
-              "ViewState": "AgIAALsBAAAAAAAAAAAAAMQBAAAbAAAAAAAAAA==",
+              "ViewState": "AgIAAL8BAAAAAAAAAAAAALIBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2026-01-08T17:43:58.734Z",
               "EditorCaption": ""
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "window.cpp",
+              "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Graphics\\window.cpp",
+              "RelativeDocumentMoniker": "GameEngine\\Graphics\\window.cpp",
+              "ToolTip": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Graphics\\window.cpp",
+              "RelativeToolTip": "GameEngine\\Graphics\\window.cpp",
+              "ViewState": "AgIAAB8AAAAAAAAAAAAIwEsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-01-09T18:39:05.618Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "physics.cpp",
+              "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\physics.cpp",
+              "RelativeDocumentMoniker": "GameEngine\\Algorithms\\physics.cpp",
+              "ToolTip": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\physics.cpp",
+              "RelativeToolTip": "GameEngine\\Algorithms\\physics.cpp",
+              "ViewState": "AgIAACcAAAAAAAAAAAAAAGgAAAAbAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-01-09T18:37:01.272Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "collision.h",
+              "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\collision.h",
+              "RelativeDocumentMoniker": "GameEngine\\Algorithms\\collision.h",
+              "ToolTip": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\collision.h",
+              "RelativeToolTip": "GameEngine\\Algorithms\\collision.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-01-09T09:16:08.189Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "platform.h",
+              "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Objects\\platform.h",
+              "RelativeDocumentMoniker": "GameEngine\\Objects\\platform.h",
+              "ToolTip": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Objects\\platform.h",
+              "RelativeToolTip": "GameEngine\\Objects\\platform.h",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
+              "WhenOpened": "2026-01-08T19:08:45.54Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Bookmark",
@@ -90,84 +193,21 @@
               "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
             },
             {
-              "$type": "Bookmark",
-              "Name": "ST:1:0:{d212f56b-c48a-434c-a121-1c5d80b59b9f}"
-            },
-            {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "collision.cpp",
-              "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\collision.cpp",
-              "RelativeDocumentMoniker": "GameEngine\\Algorithms\\collision.cpp",
-              "ToolTip": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\collision.cpp",
-              "RelativeToolTip": "GameEngine\\Algorithms\\collision.cpp",
-              "ViewState": "AgIAAI0AAAAAAAAAAAAAALsAAAAvAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-01-09T11:47:10.049Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "window.cpp",
-              "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Graphics\\window.cpp",
-              "RelativeDocumentMoniker": "GameEngine\\Graphics\\window.cpp",
-              "ToolTip": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Graphics\\window.cpp",
-              "RelativeToolTip": "GameEngine\\Graphics\\window.cpp",
-              "ViewState": "AgIAACgAAAAAAAAAAAAIwEsAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-01-09T18:39:05.618Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "physics.cpp",
-              "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\physics.cpp",
-              "RelativeDocumentMoniker": "GameEngine\\Algorithms\\physics.cpp",
-              "ToolTip": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\physics.cpp",
-              "RelativeToolTip": "GameEngine\\Algorithms\\physics.cpp",
-              "ViewState": "AgIAACsAAAAAAAAAAAAawFkAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-01-09T18:37:01.272Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 8,
               "Title": "camera.cpp",
               "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Camera\\camera.cpp",
               "RelativeDocumentMoniker": "GameEngine\\Camera\\camera.cpp",
               "ToolTip": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Camera\\camera.cpp",
               "RelativeToolTip": "GameEngine\\Camera\\camera.cpp",
-              "ViewState": "AgIAAEsAAAAAAAAAAIAwwAkAAAAuAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAuAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-01-08T18:11:08.617Z"
+              "WhenOpened": "2026-01-08T18:11:08.617Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "collision.h",
-              "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\collision.h",
-              "RelativeDocumentMoniker": "GameEngine\\Algorithms\\collision.h",
-              "ToolTip": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Algorithms\\collision.h",
-              "RelativeToolTip": "GameEngine\\Algorithms\\collision.h",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAFsAAAAfAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-01-09T09:16:08.189Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "platform.h",
-              "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Objects\\platform.h",
-              "RelativeDocumentMoniker": "GameEngine\\Objects\\platform.h",
-              "ToolTip": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Objects\\platform.h",
-              "RelativeToolTip": "GameEngine\\Objects\\platform.h",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAqwC4AAABGAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-01-08T19:08:45.54Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 9,
               "Title": "window.h",
               "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Graphics\\window.h",
               "RelativeDocumentMoniker": "GameEngine\\Graphics\\window.h",
@@ -179,7 +219,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 10,
               "Title": "camera.h",
               "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Camera\\camera.h",
               "RelativeDocumentMoniker": "GameEngine\\Camera\\camera.h",
@@ -191,7 +231,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 11,
               "Title": "mesh.h",
               "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Model Loading\\mesh.h",
               "RelativeDocumentMoniker": "GameEngine\\Model Loading\\mesh.h",
@@ -203,7 +243,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 13,
               "Title": "mesh.cpp",
               "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Model Loading\\mesh.cpp",
               "RelativeDocumentMoniker": "GameEngine\\Model Loading\\mesh.cpp",
@@ -215,7 +255,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 12,
               "Title": "rockwall.bmp",
               "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Resources\\Textures\\rockwall.bmp",
               "RelativeDocumentMoniker": "GameEngine\\Resources\\Textures\\rockwall.bmp",
@@ -226,7 +266,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 14,
               "Title": "shader.cpp",
               "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Shaders\\shader.cpp",
               "RelativeDocumentMoniker": "GameEngine\\Shaders\\shader.cpp",

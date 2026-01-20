@@ -10,7 +10,7 @@ Platform::Platform(const Mesh& m, const char* platformName)
 	scale(1.0f),
 	collisionEnabled(true),
 	useOBBCollision(false),
-	isHazard(false),  // NEW: Initialize hazard to false
+	m_isHazard(false), 
 	name(platformName)
 {
 	computeMeshBounds();
