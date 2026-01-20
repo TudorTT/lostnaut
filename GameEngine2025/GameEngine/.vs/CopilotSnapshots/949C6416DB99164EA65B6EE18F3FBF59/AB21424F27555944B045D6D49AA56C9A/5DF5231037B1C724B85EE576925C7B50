@@ -1,0 +1,254 @@
+﻿#include "Graphics\window.h"
+#include "Camera\camera.h"
+#include "Shaders\shader.h"
+#include "Model Loading\mesh.h"
+#include "Model Loading\texture.h"
+#include "Model Loading\meshLoaderObj.h"
+#include "Objects\platform.h"
+#include "Algorithms\collision.h"
+
+void processKeyboardInput();
+
+float deltaTime = 0.0f;	// time between current frame and last frame
+float lastFrame = 0.0f;
+
+Window window("Game Engine", 800, 800);
+Camera camera;
+
+glm::vec3 lightColor = glm::vec3(1.0f);
+glm::vec3 lightPos = glm::vec3(-180.0f, 100.0f, -200.0f);
+
+// Centralized collision manager
+CollisionManager collisionManager;
+
+// simple global platform pointer used by the input/physics clamp below
+Platform* g_platform = nullptr;
+Platform* platform1 = nullptr;
+Platform* platform2 = nullptr;
+Platform* mountain1 = nullptr;
+
+// eye height above player's origin
+const float PLAYER_EYE_HEIGHT = 1.0f;
+
+int main()
+{
+	glClearColor(0.2f, 0.8f, 1.0f, 1.0f);
+
+	//building and compiling shader program
+	Shader shader("Shaders/vertex_shader.glsl", "Shaders/fragment_shader.glsl");
+	Shader sunShader("Shaders/sun_vertex_shader.glsl", "Shaders/sun_fragment_shader.glsl");
+
+	//Textures
+	GLuint tex = loadBMP("Resources/Textures/wood.bmp");
+	GLuint tex2 = loadBMP("Resources/Textures/rock.bmp");
+	GLuint tex3 = loadBMP("Resources/Textures/mars.bmp");
+	GLuint tex4 = loadBMP("Resources/Textures/platform.bmp"); // platform texture
+	GLuint tex5 = loadBMP("Resources/Textures/rockwall.bmp");
+	glEnable(GL_DEPTH_TEST);
+
+	//Test custom mesh loading
+	std::vector<Vertex> vert;
+	vert.push_back(Vertex());
+	vert[0].pos = glm::vec3(10.5f, 10.5f, 0.0f);
+	vert[0].textureCoords = glm::vec2(1.0f, 1.0f);
+
+	vert.push_back(Vertex());
+	vert[1].pos = glm::vec3(10.5f, -10.5f, 0.0f);
+	vert[1].textureCoords = glm::vec2(1.0f, 0.0f);
+
+	vert.push_back(Vertex());
+	vert[2].pos = glm::vec3(-10.5f, -10.5f, 0.0f);
+	vert[2].textureCoords = glm::vec2(0.0f, 0.0f);
+
+	vert.push_back(Vertex());
+	vert[3].pos = glm::vec3(-10.5f, 10.5f, 0.0f);
+	vert[3].textureCoords = glm::vec2(0.0f, 1.0f);
+
+	vert[0].normals = glm::normalize(glm::cross(vert[1].pos - vert[0].pos, vert[3].pos - vert[0].pos));
+	vert[1].normals = glm::normalize(glm::cross(vert[2].pos - vert[1].pos, vert[0].pos - vert[1].pos));
+	vert[2].normals = glm::normalize(glm::cross(vert[3].pos - vert[2].pos, vert[1].pos - vert[2].pos));
+	vert[3].normals = glm::normalize(glm::cross(vert[0].pos - vert[3].pos, vert[2].pos - vert[3].pos));
+
+	std::vector<int> ind = { 0, 1, 3,
+		1, 2, 3 };
+
+	std::vector<Texture> textures;
+	textures.push_back(Texture());
+	textures[0].id = tex;
+	textures[0].type = "texture_diffuse";
+
+	std::vector<Texture> textures2;
+	textures2.push_back(Texture());
+	textures2[0].id = tex2;
+	textures2[0].type = "texture_diffuse";
+
+	std::vector<Texture> textures3;
+	textures3.push_back(Texture());
+	textures3[0].id = tex3;
+	textures3[0].type = "texture_diffuse";
+
+	std::vector<Texture> textures4;
+	textures4.push_back(Texture());
+	textures4[0].id = tex4;
+	textures4[0].type = "texture_diffuse";
+
+	std::vector<Texture> textures5;
+	textures5.push_back(Texture());
+	textures5[0].id = tex5;
+	textures5[0].type = "texture_diffuse";
+
+
+
+	// Create Obj files - easier :)
+	// we can add here our textures :)
+	MeshLoaderObj loader;
+	Mesh sun = loader.loadObj("Resources/Models/sphere.obj");
+	Mesh box = loader.loadObj("Resources/Models/cube.obj", textures);
+	Mesh plane = loader.loadObj("Resources/Models/plane_mars.obj", textures3);
+
+	// small platform mesh (reuse plane geometry but with platform texture)
+	Mesh platformMesh = loader.loadObj("Resources/Models/Meshy_AI_a_mars_rock_that_look_0108213227_texture.obj", textures4);
+	Mesh mountainMesh = loader.loadObj("Resources/Models/Rockwall.obj", textures5);
+	// create a Platform from the plane mesh (keeps rendering + collision logic encapsulated)
+	g_platform = new Platform(plane);
+	g_platform->setPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+	// scale the plane larger so it's easier to stand on
+	g_platform->setScale(glm::vec3(300.0f, 2.0f, 300.0f));
+
+	// create floating platforms in the air
+	platform1 = new Platform(platformMesh);
+	platform1->setPosition(glm::vec3(0.0f, 8.0f, 0.0f));
+	platform1->setScale(glm::vec3(10.0f, 15.0f, 10.0f));
+
+	platform2 = new Platform(platformMesh);
+	platform2->setPosition(glm::vec3(1.0f, 150.0f,0.0f));
+	platform2->setScale(glm::vec3(10.0f, 15.0f, 10.0f));
+
+	mountain1 = new Platform(mountainMesh);
+	mountain1->setPosition(glm::vec3(10.0f, 0.0f, 10.0f));
+	mountain1->setScale(glm::vec3(50.0f, 50.0f, 50.0f));
+
+
+
+	// Register all platforms with the collision manager
+	collisionManager.addCollidable(g_platform);
+	collisionManager.addCollidable(platform1);
+	collisionManager.addCollidable(platform2);
+	collisionManager.addCollidable(mountain1);
+	
+	// Optional: set collision margin and enable debug output
+	collisionManager.setCollisionMargin(0.5f);
+	// collisionManager.setDebugOutput(true);  // Uncomment for debug info
+
+	//check if we close the window or press the escape button
+	while (!window.isPressed(GLFW_KEY_ESCAPE) &&
+		glfwWindowShouldClose(window.getWindow()) == 0)
+	{
+		window.clear();
+		float currentFrame = glfwGetTime();
+		deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+
+		processKeyboardInput();
+
+		//test mouse input
+		if (window.isMousePressed(GLFW_MOUSE_BUTTON_LEFT))
+		{
+			std::cout << "Pressing mouse button" << std::endl;
+		}
+		//// Code for the light ////
+
+		sunShader.use();
+
+		glm::mat4 ProjectionMatrix = glm::perspective(90.0f, window.getWidth() * 1.0f / window.getHeight(), 0.1f, 10000.0f);
+		glm::mat4 ViewMatrix = glm::lookAt(camera.getCameraPosition(), camera.getCameraPosition() + camera.getCameraViewDirection(), camera.getCameraUp());
+
+		GLuint MatrixID = glGetUniformLocation(sunShader.getId(), "MVP");
+
+		//Test for one Obj loading = light source
+
+		glm::mat4 ModelMatrix = glm::mat4(1.0);
+		ModelMatrix = glm::translate(ModelMatrix, lightPos);
+		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+
+		sun.draw(sunShader);
+
+		//// End code for the light ////
+
+		shader.use();
+
+		///// Test Obj files for box ////
+
+		GLuint MatrixID2 = glGetUniformLocation(shader.getId(), "MVP");
+		GLuint ModelMatrixID = glGetUniformLocation(shader.getId(), "model");
+		ModelMatrix = glm::mat4(1.0);
+		ModelMatrix = glm::translate(ModelMatrix, glm::vec3(0.0f, 0.0f, 0.0f));
+		MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
+		glUniformMatrix4fv(MatrixID2, 1, GL_FALSE, &MVP[0][0]);
+		glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
+		glUniform3f(glGetUniformLocation(shader.getId(), "lightColor"), lightColor.x, lightColor.y, lightColor.z);
+		glUniform3f(glGetUniformLocation(shader.getId(), "lightPos"), lightPos.x, lightPos.y, lightPos.z);
+		glUniform3f(glGetUniformLocation(shader.getId(), "viewPos"), camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
+
+		box.draw(shader);
+
+		///// Draw platforms via class //////
+		// main ground platform
+		g_platform->draw(shader, ViewMatrix, ProjectionMatrix);
+		// floating platforms
+		if (platform1) platform1->draw(shader, ViewMatrix, ProjectionMatrix);
+		if (platform2) platform2->draw(shader, ViewMatrix, ProjectionMatrix);
+		if (mountain1) mountain1->draw(shader, ViewMatrix, ProjectionMatrix);
+		window.update();
+	}
+
+	// Remove from collision manager before deleting
+	collisionManager.clearAll();
+
+	// cleanup
+	delete g_platform;
+	g_platform = nullptr;
+	delete platform1;
+	platform1 = nullptr;
+	delete platform2;
+	platform2 = nullptr;
+	delete mountain1;
+	mountain1 = nullptr;
+}
+
+void processKeyboardInput()
+{
+	float cameraSpeed = 30 * deltaTime;
+
+	// compute proposed position instead of mutating camera immediately
+	glm::vec3 proposed = camera.getCameraPosition();
+
+	// translation relative to camera forward/right (ignore vertical in forward)
+	glm::vec3 forward = camera.getCameraViewDirection();
+	forward.y = 0.0f;
+	if (glm::length(forward) > 0.0001f) forward = glm::normalize(forward);
+	glm::vec3 right = glm::normalize(glm::cross(forward, camera.getCameraUp()));
+
+	if (window.isPressed(GLFW_KEY_W))
+		proposed += forward * cameraSpeed;
+	if (window.isPressed(GLFW_KEY_S))
+		proposed -= forward * cameraSpeed;
+	if (window.isPressed(GLFW_KEY_A))
+		proposed -= right * cameraSpeed;
+	if (window.isPressed(GLFW_KEY_D))
+		proposed += right * cameraSpeed;
+	if (window.isPressed(GLFW_KEY_R))
+		proposed += camera.getCameraUp() * cameraSpeed;
+	if (window.isPressed(GLFW_KEY_F))
+		proposed -= camera.getCameraUp() * cameraSpeed;
+
+	// Use the centralized collision manager to resolve against all platforms
+	collisionManager.resolvePointAgainstAll(proposed, PLAYER_EYE_HEIGHT);
+	// Fix: Pass a valid variable for outFace instead of leaving the argument empty
+	//CollisionManager::ContactFace face;
+	//face = CollisionManager::ContactFace::Top;
+	//collisionManager.getContactInfo(g_platform, proposed, PLAYER_EYE_HEIGHT, proposed, face);
+	//// finally apply the resolved position to the camera
+	camera.setCameraPosition(proposed);
+}}

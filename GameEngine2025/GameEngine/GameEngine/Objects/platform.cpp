@@ -1,0 +1,112 @@
+#include "platform.h"
+#include <algorithm>
+#include <limits>
+#include <cstdio>
+
+Platform::Platform(const Mesh& m, const char* platformName)
+	: mesh(m),
+	position(0.0f),
+	rotation(0.0f),
+	scale(1.0f),
+	collisionEnabled(true),
+	useOBBCollision(false),
+	m_isHazard(false), 
+	name(platformName)
+{
+	computeMeshBounds();
+
+	// DEBUG: Print mesh info
+	printf("Platform '%s' created:\n", platformName);
+	printf("  Vertices: %zu, Indices: %zu, Triangles: %zu\n",
+		mesh.vertices.size(), mesh.indices.size(), mesh.indices.size() / 3);
+	printf("  Mesh bounds: min(%.2f, %.2f, %.2f) max(%.2f, %.2f, %.2f)\n",
+		meshMin.x, meshMin.y, meshMin.z, meshMax.x, meshMax.y, meshMax.z);
+}
+
+void Platform::computeMeshBounds()
+{
+	if (mesh.vertices.empty())
+	{
+		meshMin = glm::vec3(-0.5f);
+		meshMax = glm::vec3(0.5f);
+		return;
+	}
+
+	meshMin = mesh.vertices[0].pos;
+	meshMax = mesh.vertices[0].pos;
+
+	for (const auto& v : mesh.vertices)
+	{
+		meshMin.x = std::min(meshMin.x, v.pos.x);
+		meshMin.y = std::min(meshMin.y, v.pos.y);
+		meshMin.z = std::min(meshMin.z, v.pos.z);
+
+		meshMax.x = std::max(meshMax.x, v.pos.x);
+		meshMax.y = std::max(meshMax.y, v.pos.y);
+		meshMax.z = std::max(meshMax.z, v.pos.z);
+	}
+}
+
+glm::mat4 Platform::getModelMatrix() const
+{
+	glm::mat4 model(1.0f);
+	model = glm::translate(model, position);
+	model = glm::rotate(model, rotation.y, glm::vec3(0, 1, 0));
+	model = glm::rotate(model, rotation.x, glm::vec3(1, 0, 0));
+	model = glm::rotate(model, rotation.z, glm::vec3(0, 0, 1));
+	model = glm::scale(model, scale);
+	return model;
+}
+
+void Platform::draw(Shader& shader, const glm::mat4& view, const glm::mat4& projection) const
+{
+	shader.use();
+	GLuint MatrixID = glGetUniformLocation(shader.getId(), "MVP");
+	GLuint ModelMatrixID = glGetUniformLocation(shader.getId(), "model");
+
+	glm::mat4 model = getModelMatrix();
+	glm::mat4 MVP = projection * view * model;
+
+	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
+	glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &model[0][0]);
+
+	mesh.draw(shader);
+}
+
+void Platform::getWorldAABB(glm::vec3& outMin, glm::vec3& outMax) const
+{
+	// Transform the 8 corners of the mesh AABB and compute world min/max.
+	glm::mat4 model = getModelMatrix();
+
+	glm::vec3 corners[8];
+	corners[0] = glm::vec3(meshMin.x, meshMin.y, meshMin.z);
+	corners[1] = glm::vec3(meshMax.x, meshMin.y, meshMin.z);
+	corners[2] = glm::vec3(meshMin.x, meshMax.y, meshMin.z);
+	corners[3] = glm::vec3(meshMax.x, meshMax.y, meshMin.z);
+	corners[4] = glm::vec3(meshMin.x, meshMin.y, meshMax.z);
+	corners[5] = glm::vec3(meshMax.x, meshMin.y, meshMax.z);
+	corners[6] = glm::vec3(meshMin.x, meshMax.y, meshMax.z);
+	corners[7] = glm::vec3(meshMax.x, meshMax.y, meshMax.z);
+
+	glm::vec3 wmin(std::numeric_limits<float>::infinity());
+	glm::vec3 wmax(-std::numeric_limits<float>::infinity());
+
+	for (int i = 0; i < 8; ++i)
+	{
+		glm::vec4 wc = model * glm::vec4(corners[i], 1.0f);
+		wmin.x = std::min(wmin.x, wc.x);
+		wmin.y = std::min(wmin.y, wc.y);
+		wmin.z = std::min(wmin.z, wc.z);
+
+		wmax.x = std::max(wmax.x, wc.x);
+		wmax.y = std::max(wmax.y, wc.y);
+		wmax.z = std::max(wmax.z, wc.z);
+	}
+
+	outMin = wmin;
+	outMax = wmax;
+}
+
+
+
+
