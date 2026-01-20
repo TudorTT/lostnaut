@@ -30,6 +30,9 @@ public:
 
     // Check if this object uses OBB collision
     virtual bool usesOBBCollision() const { return false; }
+
+    // Check if this object is a hazard (for damage calculation, etc.)
+    virtual bool isHazard() const { return false; }  // Default: not a hazard
 };
 
 
