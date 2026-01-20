@@ -15,8 +15,7 @@ private:
 	glm::vec3 scale;
 	bool collisionEnabled;
 	bool useOBBCollision;
-	bool m_isHazard;  // renamed to avoid conflict with method
-	// easier to check if platform is hazzard in main game loop
+	bool m_isHazard;  // Renamed: use m_ prefix to avoid conflict with isHazard() method
 	std::string name;
 
 	glm::vec3 meshMin;
@@ -39,13 +38,14 @@ public:
 	void setCollisionEnabled(bool enabled) { collisionEnabled = enabled; }
 	void setUseOBBCollision(bool use) { useOBBCollision = use; }
 	void setIsHazard(bool hazard) { m_isHazard = hazard; }
-	bool isHazard() const override { return m_isHazard; }
+	bool getIsHazard() const { return m_isHazard; }
 
 	void draw(Shader& shader, const glm::mat4& view, const glm::mat4& projection) const;
 
 	// ICollidable interface
 	void getWorldAABB(glm::vec3& outMin, glm::vec3& outMax) const override;
 	bool isCollisionEnabled() const override { return collisionEnabled; }
+	bool isHazard() const override { return m_isHazard; }  // Override from ICollidable
 	const char* getName() const override { return name.c_str(); }
 	glm::mat4 getModelMatrix() const override;
 	
