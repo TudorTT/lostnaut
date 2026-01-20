@@ -8,13 +8,15 @@
 #include "Algorithms\collision.h"
 #include "Algorithms\physics.h"
 
+//OBJECT DECLARATIONS AND SETTING UP THE SCENE IS DONE IN MAIN CPP FOR SIMPLICITY
+
 void processKeyboardInput();
 void resetPlayer();
 
 // 0 = None, 1 = Plant, 2 = Coin, 3 = Treat
 int heldItemID = 0;
 
-float deltaTime = 0.0f;
+float deltaTime = 0.0f;	// time between current frame and last frame
 float lastFrame = 0.0f;
 
 bool isNearItem = false;
@@ -33,11 +35,16 @@ glm::vec3 treatPos = glm::vec3(105.08f, 50.74f, -199.93f);
 // Spaceship Position
 glm::vec3 spaceshipPos = glm::vec3(-30.0f, 10.0f, -30.0f);
 
+// Centralized collision manager
 CollisionManager collisionManager;
+
+// Player physics
 PlayerPhysics playerPhysics;
 
+// Spawn position
 const glm::vec3 SPAWN_POSITION = glm::vec3(0.0f, 5.0f, 0.0f);
 
+// Game objects , they will be dynamically allocated
 Platform* g_platform = nullptr;
 Platform* platform1 = nullptr;
 Platform* platform2 = nullptr;
@@ -58,22 +65,26 @@ Platform* spike2 = nullptr;
 Platform* spike3 = nullptr;
 Platform* spaceshipPlatform = nullptr;
 
+// eye height above player's origin
+// player's position is at their feet for collision purposes
+// player is just a line segment for collision detection
 const float PLAYER_EYE_HEIGHT = 1.0f;
 
 int main()
 {
 	glClearColor(0.2f, 0.8f, 1.0f, 1.0f);
 
+	//building and compiling shader program
 	Shader shader("Shaders/vertex_shader.glsl", "Shaders/fragment_shader.glsl");
 	Shader sunShader("Shaders/sun_vertex_shader.glsl", "Shaders/sun_fragment_shader.glsl");
 
-	// Textures
+	//Textures
 	GLuint tex = loadBMP("Resources/Textures/wood.bmp");
-	GLuint tex2 = loadBMP("Resources/Textures/fence.bmp");
-	GLuint tex3 = loadBMP("Resources/Textures/mars.bmp");
-	GLuint tex4 = loadBMP("Resources/Textures/platform.bmp");
-	GLuint tex5 = loadBMP("Resources/Textures/rockwall.bmp");
-	GLuint tex6 = loadBMP("Resources/Textures/spikes.bmp");
+	GLuint tex2 = loadBMP("Resources/Textures/fence.bmp"); // fence texture
+	GLuint tex3 = loadBMP("Resources/Textures/mars.bmp"); // ground tex
+	GLuint tex4 = loadBMP("Resources/Textures/platform.bmp"); // platform tex
+	GLuint tex5 = loadBMP("Resources/Textures/rockwall.bmp"); // moutain tex
+	GLuint tex6 = loadBMP("Resources/Textures/spikes.bmp");  // spike tex
 
 	GLuint texPlant = loadBMP("Resources/Textures/Plant_BaseColor.bmp");
 	GLuint texCoin = loadBMP("Resources/Textures/GoldColor.bmp");
@@ -82,29 +93,66 @@ int main()
 	GLuint texSpaceship = loadBMP("Resources/Textures/spaceship_texture.bmp");
 
 	glEnable(GL_DEPTH_TEST);
+
+	// Lock cursor for FPS-style controls
 	window.lockCursor(true);
 
 	// Texture Vectors
-	std::vector<Texture> textures; textures.push_back({ tex, "texture_diffuse" });
-	std::vector<Texture> textures2; textures2.push_back({ tex2, "texture_diffuse" });
-	std::vector<Texture> textures3; textures3.push_back({ tex3, "texture_diffuse" });
-	std::vector<Texture> textures4; textures4.push_back({ tex4, "texture_diffuse" });
-	std::vector<Texture> textures5; textures5.push_back({ tex5, "texture_diffuse" });
-	std::vector<Texture> texturesSpike; texturesSpike.push_back({ tex6, "texture_diffuse" });
+	std::vector<Texture> textures; 
+	textures.push_back({ tex, "texture_diffuse" });
+	
+	// the "fence" , big flat box in the middle of the scene
+	std::vector<Texture> textures2; 
+	textures2.push_back({ tex2, "texture_diffuse" });
+	
+	// ground texture
+	std::vector<Texture> textures3; 
+	textures3.push_back({ tex3, "texture_diffuse" });
+	
+	// platform texture
+	std::vector<Texture> textures4; 
+	textures4.push_back({ tex4, "texture_diffuse" });
+	
+	//mountain textures
+	std::vector<Texture> textures5; 
+	textures5.push_back({ tex5, "texture_diffuse" });
+	
+	//spike textures
+	std::vector<Texture> texturesSpike; 
+	texturesSpike.push_back({ tex6, "texture_diffuse" });
 
-	std::vector<Texture> texturesPlant; texturesPlant.push_back({ texPlant, "texture_diffuse" });
-	std::vector<Texture> texturesCoin; texturesCoin.push_back({ texCoin, "texture_diffuse" });
-	std::vector<Texture> texturesTreat; texturesTreat.push_back({ texTreat, "texture_diffuse" });
-	std::vector<Texture> texturesPressE; texturesPressE.push_back({ texPressE, "texture_diffuse" });
-	std::vector<Texture> texturesSpaceship; texturesSpaceship.push_back({ texSpaceship, "texture_diffuse" });
+	std::vector<Texture> texturesPlant; 
+	texturesPlant.push_back({ texPlant, "texture_diffuse" });
+	
+	std::vector<Texture> texturesCoin; 
+	texturesCoin.push_back({ texCoin, "texture_diffuse" });
+	
+	std::vector<Texture> texturesTreat; 
+	texturesTreat.push_back({ texTreat, "texture_diffuse" });
+	
+	std::vector<Texture> texturesPressE; 
+	texturesPressE.push_back({ texPressE, "texture_diffuse" });
+	
+	std::vector<Texture> texturesSpaceship; 
+	texturesSpaceship.push_back({ texSpaceship, "texture_diffuse" });
 
 	MeshLoaderObj loader;
 	Mesh sun = loader.loadObj("Resources/Models/sphere.obj");
 	Mesh box = loader.loadObj("Resources/Models/cube.obj", textures);
+	
+	// plane mesh for ground
 	Mesh plane = loader.loadObj("Resources/Models/plane_mars.obj", textures3);
+	
+	// fence mesh ahh 
 	Mesh fenceMesh = loader.loadObj("Resources/Models/fence.obj", textures2);
+	
+	// small platform mesh (reuse plane geometry but with platform texture)
 	Mesh platformMesh = loader.loadObj("Resources/Models/floatingplatform.obj", textures4);
+	
+	// mountain mesh
 	Mesh mountainMesh = loader.loadObj("Resources/Models/Rockwall.obj", textures5);
+	
+	// spike mesh
 	Mesh spikeMesh = loader.loadObj("Resources/Models/spikes.obj", texturesSpike);
 
 	Mesh plantModel = loader.loadObj("Resources/Models/Plant.obj", texturesPlant);
@@ -113,34 +161,94 @@ int main()
 	Mesh spaceshipModel = loader.loadObj("Resources/Models/spaceship.obj", texturesSpaceship);
 
 	// Platforms Init
+	// create a Platform from the plane mesh (keeps rendering + collision logic encapsulated)
 	g_platform = new Platform(plane, "Ground");
 	g_platform->setPosition(glm::vec3(0.0f, 1.0f, 0.0f));
 	g_platform->setScale(glm::vec3(300.0f, 2.0f, 1000.0f));
 
-	platform1 = new Platform(platformMesh, "P1"); platform1->setPosition(glm::vec3(50.0f, 10.0f, -38.0f)); platform1->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
-	platform2 = new Platform(platformMesh, "P2"); platform2->setPosition(glm::vec3(0.0f, 30.0f, -60.0f)); platform2->setScale(glm::vec3(15.0f, 15.0f, 15.0f));
-	platform3 = new Platform(platformMesh, "P3"); platform3->setPosition(glm::vec3(40.0f, 40.0f, -110.0f)); platform3->setScale(glm::vec3(20.0f, 10.0f, 25.0f));
-	platform4 = new Platform(platformMesh, "P4"); platform4->setPosition(glm::vec3(9.0f, 50.0f, -150.0f)); platform4->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
-	platform5 = new Platform(platformMesh, "P5"); platform5->setPosition(glm::vec3(110.0f, 30.0f, -260.0f)); platform5->setScale(glm::vec3(13.0f, 10.0f, 13.0f));
-	platform6 = new Platform(platformMesh, "P6"); platform6->setPosition(glm::vec3(76.0f, 20.0f, -242.0f)); platform6->setScale(glm::vec3(13.0f, 10.0f, 13.0f));
+	// create floating platforms in the air
+	platform1 = new Platform(platformMesh, "P1"); 
+	platform1->setPosition(glm::vec3(50.0f, 10.0f, -38.0f)); 
+	platform1->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
+	
+	platform2 = new Platform(platformMesh, "P2"); 
+	platform2->setPosition(glm::vec3(0.0f, 30.0f, -60.0f)); 
+	platform2->setScale(glm::vec3(15.0f, 15.0f, 15.0f));
+	
+	platform3 = new Platform(platformMesh, "P3"); 
+	platform3->setPosition(glm::vec3(40.0f, 40.0f, -110.0f)); 
+	platform3->setScale(glm::vec3(20.0f, 10.0f, 25.0f));
+	
+	platform4 = new Platform(platformMesh, "P4"); 
+	platform4->setPosition(glm::vec3(9.0f, 50.0f, -150.0f)); 
+	platform4->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
+	
+	platform5 = new Platform(platformMesh, "P5"); 
+	platform5->setPosition(glm::vec3(110.0f, 30.0f, -260.0f)); 
+	platform5->setScale(glm::vec3(13.0f, 10.0f, 13.0f));
+	
+	platform6 = new Platform(platformMesh, "P6"); 
+	platform6->setPosition(glm::vec3(76.0f, 20.0f, -242.0f)); 
+	platform6->setScale(glm::vec3(13.0f, 10.0f, 13.0f));
 
 	// NEW: Plant Platform initialization
 	plantPlatform = new Platform(platformMesh, "PlantPlatform");
 	plantPlatform->setPosition(glm::vec3(-93.14f, 60.0f, -193.34f)); // 1 unit below the plant
 	plantPlatform->setScale(glm::vec3(10.0f, 5.0f, 10.0f));
 
-	fence = new Platform(fenceMesh, "fence"); fence->setPosition(glm::vec3(60.0f, 0.0f, -200.0f)); fence->setScale(glm::vec3(175.0f, 25.0f, 20.0f));
+	//fence in the middle of the scene , big flat box
+	fence = new Platform(fenceMesh, "fence"); 
+	fence->setPosition(glm::vec3(60.0f, 0.0f, -200.0f)); 
+	fence->setScale(glm::vec3(175.0f, 25.0f, 20.0f));
 
-	mountain1 = new Platform(mountainMesh, "M1"); mountain1->setPosition(glm::vec3(100.0f, 0.0f, 100.0f)); mountain1->setScale(glm::vec3(250.0f, 250.0f, 250.0f)); mountain1->setRotation(glm::vec3(0.0f, 180.0f, 0.0f)); mountain1->setUseOBBCollision(true);
-	mountain2 = new Platform(mountainMesh, "M2"); mountain2->setPosition(glm::vec3(-100.0f, 0.0f, 100.0f)); mountain2->setScale(glm::vec3(250.0f, 250.0f, 250.0f)); mountain2->setRotation(glm::vec3(0.0f, -180.0f, 0.0f)); mountain2->setUseOBBCollision(true);
-	mountain4 = new Platform(mountainMesh, "M4"); mountain4->setPosition(glm::vec3(223.0f, 0.0f, -275.0f)); mountain4->setScale(glm::vec3(300.0f, 270.0f, 300.0f)); mountain4->setRotation(glm::vec3(0.0f, 80.0f, 0.0f)); mountain4->setUseOBBCollision(true);
-	mountain5 = new Platform(mountainMesh, "M5"); mountain5->setPosition(glm::vec3(-223.0f, 0.0f, -275.0f)); mountain5->setScale(glm::vec3(300.0f, 350.0f, 300.0f)); mountain5->setRotation(glm::vec3(0.0f, 80.0f, 0.0f)); mountain5->setUseOBBCollision(true);
-	mountain3 = new Platform(mountainMesh, "M3"); mountain3->setPosition(glm::vec3(0.0f, 0.0f, 150.0f)); mountain3->setScale(glm::vec3(130.0f, 130.0f, 130.0f));
-	mountain6 = new Platform(mountainMesh, "M6"); mountain6->setPosition(glm::vec3(50.0f, 0.0f, -470.0f)); mountain6->setScale(glm::vec3(200.0f, 400.0f, 200.0f));
+	//mountain arround gameplay area acting as walls
+	mountain1 = new Platform(mountainMesh, "M1"); 
+	mountain1->setPosition(glm::vec3(100.0f, 0.0f, 100.0f)); 
+	mountain1->setScale(glm::vec3(250.0f, 250.0f, 250.0f)); 
+	mountain1->setRotation(glm::vec3(0.0f, 180.0f, 0.0f)); 
+	mountain1->setUseOBBCollision(true);
+	
+	mountain2 = new Platform(mountainMesh, "M2"); 
+	mountain2->setPosition(glm::vec3(-100.0f, 0.0f, 100.0f)); 
+	mountain2->setScale(glm::vec3(250.0f, 250.0f, 250.0f)); 
+	mountain2->setRotation(glm::vec3(0.0f, -180.0f, 0.0f)); 
+	mountain2->setUseOBBCollision(true);
+	
+	mountain4 = new Platform(mountainMesh, "M4"); 
+	mountain4->setPosition(glm::vec3(223.0f, 0.0f, -275.0f)); 
+	mountain4->setScale(glm::vec3(300.0f, 270.0f, 300.0f)); 
+	mountain4->setRotation(glm::vec3(0.0f, 80.0f, 0.0f)); 
+	mountain4->setUseOBBCollision(true);
+	
+	mountain5 = new Platform(mountainMesh, "M5"); 
+	mountain5->setPosition(glm::vec3(-223.0f, 0.0f, -275.0f)); 
+	mountain5->setScale(glm::vec3(300.0f, 350.0f, 300.0f)); 
+	mountain5->setRotation(glm::vec3(0.0f, 80.0f, 0.0f)); 
+	mountain5->setUseOBBCollision(true);
+	
+	mountain3 = new Platform(mountainMesh, "M3"); 
+	mountain3->setPosition(glm::vec3(0.0f, 0.0f, 150.0f)); 
+	mountain3->setScale(glm::vec3(130.0f, 130.0f, 130.0f));
+	
+	mountain6 = new Platform(mountainMesh, "M6"); 
+	mountain6->setPosition(glm::vec3(50.0f, 0.0f, -470.0f)); 
+	mountain6->setScale(glm::vec3(200.0f, 400.0f, 200.0f));
 
-	spike1 = new Platform(spikeMesh, "S1"); spike1->setPosition(glm::vec3(-100.0f, 1.0f, -200.0f)); spike1->setScale(glm::vec3(50.0f, 5.0f, 25.0f)); spike1->setIsHazard(true);
-	spike2 = new Platform(spikeMesh, "S2"); spike2->setPosition(glm::vec3(37.0f, 42.0f, -115.0f)); spike2->setScale(glm::vec3(5.0f, 5.0f, 5.0f)); spike2->setIsHazard(true);
-	spike3 = new Platform(spikeMesh, "S3"); spike3->setPosition(glm::vec3(9.0f, 49.0f, -196.0f)); spike3->setScale(glm::vec3(5.0f, 5.0f, 5.0f)); spike3->setIsHazard(true);
+	spike1 = new Platform(spikeMesh, "S1"); 
+	spike1->setPosition(glm::vec3(-100.0f, 1.0f, -200.0f)); 
+	spike1->setScale(glm::vec3(50.0f, 5.0f, 25.0f)); 
+	//if hazard , player will reset upon collision
+	spike1->setIsHazard(true);
+	
+	spike2 = new Platform(spikeMesh, "S2"); 
+	spike2->setPosition(glm::vec3(37.0f, 42.0f, -115.0f)); 
+	spike2->setScale(glm::vec3(5.0f, 5.0f, 5.0f)); 
+	spike2->setIsHazard(true);
+	
+	spike3 = new Platform(spikeMesh, "S3"); 
+	spike3->setPosition(glm::vec3(9.0f, 49.0f, -196.0f)); 
+	spike3->setScale(glm::vec3(5.0f, 5.0f, 5.0f)); 
+	spike3->setIsHazard(true);
 
 	// Spaceship as a Platform for Collision
 	spaceshipPlatform = new Platform(spaceshipModel, "Spaceship");
@@ -148,18 +256,31 @@ int main()
 	spaceshipPlatform->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
 	spaceshipPlatform->setUseOBBCollision(true);
 
+	// Register all platforms with the collision manager
 	collisionManager.addCollidable(g_platform);
-	collisionManager.addCollidable(platform1); collisionManager.addCollidable(platform2); collisionManager.addCollidable(platform3);
-	collisionManager.addCollidable(platform4); collisionManager.addCollidable(platform5); collisionManager.addCollidable(platform6);
+	collisionManager.addCollidable(platform1); 
+	collisionManager.addCollidable(platform2); 
+	collisionManager.addCollidable(platform3);
+	collisionManager.addCollidable(platform4); 
+	collisionManager.addCollidable(platform5); 
+	collisionManager.addCollidable(platform6);
 	collisionManager.addCollidable(plantPlatform); // NEW: Register collision
 	collisionManager.addCollidable(fence);
-	collisionManager.addCollidable(mountain1); collisionManager.addCollidable(mountain2); collisionManager.addCollidable(mountain3);
-	collisionManager.addCollidable(mountain4); collisionManager.addCollidable(mountain5); collisionManager.addCollidable(mountain6);
-	collisionManager.addCollidable(spike1); collisionManager.addCollidable(spike2); collisionManager.addCollidable(spike3);
+	collisionManager.addCollidable(mountain1); 
+	collisionManager.addCollidable(mountain2); 
+	collisionManager.addCollidable(mountain3);
+	collisionManager.addCollidable(mountain4); 
+	collisionManager.addCollidable(mountain5); 
+	collisionManager.addCollidable(mountain6);
+	collisionManager.addCollidable(spike1); 
+	collisionManager.addCollidable(spike2); 
+	collisionManager.addCollidable(spike3);
 	collisionManager.addCollidable(spaceshipPlatform);
 
+	// 0 makes most sense for our game
 	collisionManager.setCollisionMargin(0);
-	collisionManager.setDebugOutput(false);
+	// Disable verbose debug output in release runs to avoid console flooding and input lag
+	collisionManager.setDebugOutput(false);  // Changed from true to false to reduce mouse-look lag
 
 	// HUD Setup
 	std::vector<Vertex> hudVerts;
@@ -171,7 +292,9 @@ int main()
 	v.textureCoords = glm::vec2(0, 1); v.pos = glm::vec3(-0.02f, -0.02f, 0.0f); hudVerts.push_back(v);
 	Mesh hudSquare(hudVerts, hudIndices, texturesPressE);
 
-	while (!window.isPressed(GLFW_KEY_ESCAPE) && glfwWindowShouldClose(window.getWindow()) == 0)
+	//check if we close the window or press the escape button
+	while (!window.isPressed(GLFW_KEY_ESCAPE) &&
+		glfwWindowShouldClose(window.getWindow()) == 0)
 	{
 		window.clear();
 		float currentFrame = glfwGetTime();
@@ -180,15 +303,22 @@ int main()
 
 		processKeyboardInput();
 
+		//// Code for the light ////
+
 		sunShader.use();
+		//camera fov
 		glm::mat4 ProjectionMatrix = glm::perspective(glm::radians(70.0f), window.getWidth() * 1.0f / window.getHeight(), 0.1f, 10000.0f);
 		glm::mat4 ViewMatrix = glm::lookAt(camera.getCameraPosition(), camera.getCameraPosition() + camera.getCameraViewDirection(), camera.getCameraUp());
 
 		GLuint MatrixID = glGetUniformLocation(sunShader.getId(), "MVP");
+
+		//Test for one Obj loading = light source
 		glm::mat4 ModelMatrix = glm::translate(glm::mat4(1.0), lightPos);
 		glm::mat4 MVP = ProjectionMatrix * ViewMatrix * ModelMatrix;
 		glUniformMatrix4fv(MatrixID, 1, GL_FALSE, &MVP[0][0]);
 		sun.draw(sunShader);
+
+		//// End code for the light ////
 
 		shader.use();
 		GLuint MatrixID2 = glGetUniformLocation(shader.getId(), "MVP");
@@ -204,8 +334,10 @@ int main()
 		glUniformMatrix4fv(ModelMatrixID, 1, GL_FALSE, &ModelMatrix[0][0]);
 		box.draw(shader);
 
-		// Platforms
+		///// Draw platforms via class //////
+		// main ground platform
 		g_platform->draw(shader, ViewMatrix, ProjectionMatrix);
+		// floating platforms
 		if (platform1) platform1->draw(shader, ViewMatrix, ProjectionMatrix);
 		if (platform2) platform2->draw(shader, ViewMatrix, ProjectionMatrix);
 		if (platform3) platform3->draw(shader, ViewMatrix, ProjectionMatrix);
@@ -220,9 +352,12 @@ int main()
 		if (mountain4) mountain4->draw(shader, ViewMatrix, ProjectionMatrix);
 		if (mountain5) mountain5->draw(shader, ViewMatrix, ProjectionMatrix);
 		if (mountain6) mountain6->draw(shader, ViewMatrix, ProjectionMatrix);
+		
+		// In the render loop, after drawing other platforms:
 		if (spike1) spike1->draw(shader, ViewMatrix, ProjectionMatrix);
 		if (spike2) spike2->draw(shader, ViewMatrix, ProjectionMatrix);
 		if (spike3) spike3->draw(shader, ViewMatrix, ProjectionMatrix);
+		
 		if (spaceshipPlatform) spaceshipPlatform->draw(shader, ViewMatrix, ProjectionMatrix);
 
 		// --- Items ---
@@ -286,19 +421,55 @@ int main()
 			hudSquare.draw(sunShader);
 			glEnable(GL_DEPTH_TEST);
 		}
+		
 		window.update();
 	}
 
+	// Remove from collision manager before deleting
 	collisionManager.clearAll();
-	delete g_platform; delete platform1; delete platform2; delete platform3;
-	delete platform4; delete platform5; delete platform6;
+
+	// cleanup
+	delete g_platform; 
+	g_platform = nullptr;
+	delete platform1; 
+	platform1 = nullptr;
+	delete platform2; 
+	platform2 = nullptr;
+	delete platform3; 
+	platform3 = nullptr;
+	delete platform4; 
+	platform4 = nullptr;
+	delete platform5; 
+	platform5 = nullptr;
+	delete platform6; 
+	platform6 = nullptr;
 	delete plantPlatform; // NEW: Cleanup
-	delete fence;
-	delete mountain1; delete mountain2; delete mountain3; delete mountain4;
-	delete mountain5; delete mountain6; delete spike1; delete spike2; delete spike3;
-	delete spaceshipPlatform;
+	plantPlatform = nullptr;
+	delete fence; 
+	fence = nullptr;
+	delete mountain1; 
+	mountain1 = nullptr;
+	delete mountain2; 
+	mountain2 = nullptr;
+	delete mountain3; 
+	mountain3 = nullptr;
+	delete mountain4; 
+	mountain4 = nullptr;
+	delete mountain5; 
+	mountain5 = nullptr;
+	delete mountain6; 
+	mountain6 = nullptr;
+	delete spike1; 
+	spike1 = nullptr;
+	delete spike2; 
+	spike2 = nullptr;
+	delete spike3; 
+	spike3 = nullptr;
+	delete spaceshipPlatform; 
+	spaceshipPlatform = nullptr;
 }
 
+//basically game loop input processing
 void processKeyboardInput()
 {
 	float distPlant = glm::distance(camera.getCameraPosition(), plantPos);
@@ -345,72 +516,147 @@ void processKeyboardInput()
 	}
 	eWasPressed = window.isPressed(GLFW_KEY_E);
 
+	// lock cursor in window with tab key 
 	static bool tabWasPressed = false;
 	bool tabPressed = window.isPressed(GLFW_KEY_TAB);
-	if (tabPressed && !tabWasPressed) window.lockCursor(!window.isCursorLocked());
-	tabWasPressed = tabPressed;
+	if (tabPressed && !tabWasPressed)
+	{window.lockCursor(!window.isCursorLocked());
+}
+tabWasPressed = tabPressed;
 
-	if (window.isCursorLocked()) {
-		double deltaX, deltaY;
-		window.getMouseDelta(deltaX, deltaY);
-		camera.mouseLook((float)deltaX, (float)deltaY, 0.1f);
-		window.resetMouseDelta();
+// mouse look
+if (window.isCursorLocked())
+{
+	double deltaX, deltaY;
+	window.getMouseDelta(deltaX, deltaY);
+	camera.mouseLook((float)deltaX, (float)deltaY, 0.1f);
+	window.resetMouseDelta();
+}
+
+// debug : reset player position with P key
+static bool pWasPressed = false;
+if (window.isPressed(GLFW_KEY_P) && !pWasPressed)
+{
+	resetPlayer();
+}
+pWasPressed = window.isPressed(GLFW_KEY_P);
+
+// Get current position
+glm::vec3 currentPos = camera.getCameraPosition();
+
+// calculate movement direction based on input
+glm::vec3 moveDirection(0.0f);
+
+// get forward and right vectors from camera (ignore y component for movement)
+glm::vec3 forward = camera.getCameraViewDirection();
+forward.y = 0.0f;
+if (glm::length(forward) > 0.0001f) forward = glm::normalize(forward);
+glm::vec3 right = glm::normalize(glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f)));
+
+// WASD movement input
+if (window.isPressed(GLFW_KEY_W))
+	moveDirection += forward;
+if (window.isPressed(GLFW_KEY_S))
+	moveDirection -= forward;
+if (window.isPressed(GLFW_KEY_A))
+	moveDirection -= right;
+if (window.isPressed(GLFW_KEY_D))
+	moveDirection += right;
+
+// Check if running (holding shift)
+bool isRunning = window.isPressed(GLFW_KEY_LEFT_SHIFT) || window.isPressed(GLFW_KEY_RIGHT_SHIFT);
+
+// Apply movement input to physics
+playerPhysics.applyMovementInput(moveDirection, isRunning);
+
+// Jump (spacebar) - use edge detection AND require grounded
+static bool spaceWasPressed = false;
+if (window.isPressed(GLFW_KEY_SPACE) && !spaceWasPressed && playerPhysics.isGrounded)
+{
+	playerPhysics.jump();
+}
+spaceWasPressed = window.isPressed(GLFW_KEY_SPACE);
+
+// Update physics and get movement delta
+glm::vec3 delta = playerPhysics.update(deltaTime);
+
+// Apply delta to get proposed position
+glm::vec3 proposed = currentPos + delta;
+
+// Check collision with all objects
+bool collided = collisionManager.resolvePointAgainstAll(proposed, PLAYER_EYE_HEIGHT);
+
+bool groundContactThisFrame = false;
+
+if (collided)
+{
+	const auto& info = collisionManager.getLastCollisionInfo();
+
+	// Check for hazard collision (no dynamic_cast needed)
+	if (info.collidable && info.collidable->isHazard())
+	{
+		resetPlayer();
+		return;
 	}
 
-	static bool pWasPressed = false;
-	if (window.isPressed(GLFW_KEY_P) && !pWasPressed) resetPlayer();
-	pWasPressed = window.isPressed(GLFW_KEY_P);
+	// Handle collision based on face
+	if (info.face == CollisionManager::ContactFace::Top)
+	{
+		playerPhysics.onGroundCollision(proposed.y);
+		groundContactThisFrame = true;
+	}
+	else if (info.face == CollisionManager::ContactFace::Bottom)
+	{
+		// Only call ceiling collision for actual ceiling hits
+		playerPhysics.onCeilingCollision();
+	}
+	else
+	{
+		// For ANY collision (including side walls), check if we're still on ground
+		// This is crucial, wall collisions should NOT break ground contact
+		glm::vec3 probePos = proposed;
+		probePos.y -= 0.2f;
 
-	glm::vec3 currentPos = camera.getCameraPosition();
-	glm::vec3 moveDirection(0.0f);
-	glm::vec3 forward = camera.getCameraViewDirection();
-	forward.y = 0.0f;
-	if (glm::length(forward) > 0.0001f) forward = glm::normalize(forward);
-	glm::vec3 right = glm::normalize(glm::cross(forward, glm::vec3(0.0f, 1.0f, 0.0f)));
-
-	if (window.isPressed(GLFW_KEY_W)) moveDirection += forward;
-	if (window.isPressed(GLFW_KEY_S)) moveDirection -= forward;
-	if (window.isPressed(GLFW_KEY_A)) moveDirection -= right;
-	if (window.isPressed(GLFW_KEY_D)) moveDirection += right;
-
-	bool isRunning = window.isPressed(GLFW_KEY_LEFT_SHIFT) || window.isPressed(GLFW_KEY_RIGHT_SHIFT);
-	playerPhysics.applyMovementInput(moveDirection, isRunning);
-
-	static bool spaceWasPressed = false;
-	if (window.isPressed(GLFW_KEY_SPACE) && !spaceWasPressed && playerPhysics.isGrounded) playerPhysics.jump();
-	spaceWasPressed = window.isPressed(GLFW_KEY_SPACE);
-
-	glm::vec3 delta = playerPhysics.update(deltaTime);
-	glm::vec3 proposed = currentPos + delta;
-	bool collided = collisionManager.resolvePointAgainstAll(proposed, PLAYER_EYE_HEIGHT);
-	bool groundContactThisFrame = false;
-
-	if (collided) {
-		const auto& info = collisionManager.getLastCollisionInfo();
-		Platform* hitPlatform = dynamic_cast<Platform*>(info.collidable);
-		if (hitPlatform && hitPlatform->getIsHazard()) { resetPlayer(); return; }
-		if (info.face == CollisionManager::ContactFace::Top) { playerPhysics.onGroundCollision(proposed.y); groundContactThisFrame = true; }
-		else if (info.face == CollisionManager::ContactFace::Bottom) playerPhysics.onCeilingCollision();
-		else {
-			glm::vec3 probePos = proposed; probePos.y -= 0.2f;
-			if (collisionManager.resolvePointAgainstAll(probePos, PLAYER_EYE_HEIGHT)) {
-				if (collisionManager.getLastCollisionInfo().face == CollisionManager::ContactFace::Top) { groundContactThisFrame = true; playerPhysics.isGrounded = true; }
+		if (collisionManager.resolvePointAgainstAll(probePos, PLAYER_EYE_HEIGHT))
+		{
+			if (collisionManager.getLastCollisionInfo().face == CollisionManager::ContactFace::Top)
+			{
+				groundContactThisFrame = true;
+				playerPhysics.isGrounded = true;
 			}
 		}
 	}
-	else if (playerPhysics.isGrounded && playerPhysics.velocity.y <= 0.1f) {
-		glm::vec3 probePos = proposed; probePos.y -= 0.3f;
-		if (collisionManager.resolvePointAgainstAll(probePos, PLAYER_EYE_HEIGHT)) {
-			if (collisionManager.getLastCollisionInfo().face == CollisionManager::ContactFace::Top) { groundContactThisFrame = true; playerPhysics.isGrounded = true; }
+}
+else
+{
+	// No collision, check if we're still on ground (edge detection)
+	if (playerPhysics.isGrounded && playerPhysics.velocity.y <= 0.1f)
+	{
+		glm::vec3 probePos = proposed;
+		probePos.y -= 0.3f;
+
+		if (collisionManager.resolvePointAgainstAll(probePos, PLAYER_EYE_HEIGHT))
+		{
+			if (collisionManager.getLastCollisionInfo().face == CollisionManager::ContactFace::Top)
+			{
+				groundContactThisFrame = true;
+				playerPhysics.isGrounded = true;
+			}
 		}
 	}
-
-	if (!groundContactThisFrame) playerPhysics.isGrounded = false;
-	camera.setCameraPosition(proposed);
 }
 
+// update grounded state
+if (!groundContactThisFrame)
+{
+	playerPhysics.isGrounded = false;
+}
+
+// apply the resolved position to the camera
+camera.setCameraPosition(proposed);
+}
 void resetPlayer()
 {
-	camera.setCameraPosition(SPAWN_POSITION);
-	playerPhysics.reset();
+camera.setCameraPosition(SPAWN_POSITION);
+playerPhysics.reset();
 }
