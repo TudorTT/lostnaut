@@ -1,0 +1,12 @@
+*.log
+*.json
+*.suo
+*.db
+*.tlog
+*.ilk
+*.idb
+*.pdb
+*.opendb
+*.vsdix
+*.db-shm
+*.db-val
