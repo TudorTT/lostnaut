@@ -70,11 +70,24 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 7,
+          "SelectedChildIndex": 1,
           "Children": [
             {
               "$type": "Bookmark",
               "Name": "ST:128:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "platform.cpp",
+              "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Objects\\platform.cpp",
+              "RelativeDocumentMoniker": "GameEngine\\Objects\\platform.cpp",
+              "ToolTip": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Objects\\platform.cpp",
+              "RelativeToolTip": "GameEngine\\Objects\\platform.cpp",
+              "ViewState": "AgIAADkAAAAAAAAAAAAAABcAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
+              "WhenOpened": "2026-01-20T17:14:15.002Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Bookmark",
@@ -102,8 +115,7 @@
               "RelativeToolTip": "GameEngine\\main.cpp",
               "ViewState": "AgIAAO8BAAAAAAAAAAAuwDECAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-01-08T17:43:58.734Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-08T17:43:58.734Z"
             },
             {
               "$type": "Document",
@@ -116,19 +128,6 @@
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2026-01-20T17:35:37.496Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "platform.cpp",
-              "DocumentMoniker": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Objects\\platform.cpp",
-              "RelativeDocumentMoniker": "GameEngine\\Objects\\platform.cpp",
-              "ToolTip": "C:\\Users\\Tudor Todasca\\Downloads\\GameEngine2025 (1)\\GameEngine2025\\GameEngine\\GameEngine\\Objects\\platform.cpp",
-              "RelativeToolTip": "GameEngine\\Objects\\platform.cpp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
-              "WhenOpened": "2026-01-20T17:14:15.002Z",
-              "EditorCaption": ""
             },
             {
               "$type": "Document",
@@ -176,8 +175,7 @@
               "RelativeToolTip": "GameEngine\\Algorithms\\collision.h",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-01-09T09:16:08.189Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-09T09:16:08.189Z"
             },
             {
               "$type": "Document",
@@ -189,8 +187,7 @@
               "RelativeToolTip": "GameEngine\\Objects\\platform.h",
               "ViewState": "AgIAAB4AAAAAAAAAAAAEwBIAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-01-08T19:08:45.54Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-01-08T19:08:45.54Z"
             },
             {
               "$type": "Document",
