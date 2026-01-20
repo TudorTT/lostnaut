@@ -8,8 +8,6 @@
 #include "Algorithms\collision.h"
 #include "Algorithms\physics.h"
 
-//OBJECT DECLARATIONS AND SETTING UP THE SCENE IS DONE IN MAIN CPP FOR SIMPLICITY
-
 void processKeyboardInput();
 void resetPlayer();  
 
@@ -31,8 +29,7 @@ PlayerPhysics playerPhysics;
 // Spawn position
 const glm::vec3 SPAWN_POSITION = glm::vec3(0.0f, 5.0f, 0.0f);
 
-
-// Game objects , they will be dynamically allocated
+// simple global platform pointer used by the input/physics clamp below
 Platform* g_platform = nullptr;
 Platform* platform1 = nullptr;
 Platform* platform2 = nullptr;
@@ -51,13 +48,12 @@ Platform* mountain5 = nullptr;
 Platform* mountain6 = nullptr;
 Platform* mountainfence = nullptr;
 
+// NEW: Spike hazards
 Platform* spike1 = nullptr;
 Platform* spike2 = nullptr;
 Platform* spike3 = nullptr;
 
-// eye height above player's origin\
-// player's position is at their feet for collision purposes
-// player is just a line segment for collision detection
+// eye height above player's origin
 const float PLAYER_EYE_HEIGHT = 1.0f;
 
 int main()
@@ -69,7 +65,7 @@ int main()
 	Shader sunShader("Shaders/sun_vertex_shader.glsl", "Shaders/sun_fragment_shader.glsl");
 
 	//Textures
-	//tex was for wood box
+	GLuint tex = loadBMP("Resources/Textures/wood.bmp");
 	GLuint tex2 = loadBMP("Resources/Textures/fence.bmp"); // fence texture
 	GLuint tex3 = loadBMP("Resources/Textures/mars.bmp"); // ground tex
 	GLuint tex4 = loadBMP("Resources/Textures/platform.bmp"); // platform tex
@@ -107,52 +103,52 @@ int main()
 	std::vector<int> ind = { 0, 1, 3,
 		1, 2, 3 };
 
-	// the "fence" , big flat box in the middle of the scene
+	std::vector<Texture> textures;
+	textures.push_back(Texture());
+	textures[0].id = tex;
+	textures[0].type = "texture_diffuse";
+
 	std::vector<Texture> textures2;
 	textures2.push_back(Texture());
 	textures2[0].id = tex2;
 	textures2[0].type = "texture_diffuse";
-	// ground texture
+
 	std::vector<Texture> textures3;
 	textures3.push_back(Texture());
 	textures3[0].id = tex3;
 	textures3[0].type = "texture_diffuse";
-	// platform texture
+
 	std::vector<Texture> textures4;
 	textures4.push_back(Texture());
 	textures4[0].id = tex4;
 	textures4[0].type = "texture_diffuse";
-	//mountain textures
+
 	std::vector<Texture> textures5;
 	textures5.push_back(Texture());
 	textures5[0].id = tex5;
 	textures5[0].type = "texture_diffuse";
 
-	//spike textures
+	// Add spike texture vector
 	std::vector<Texture> texturesSpike;
 	texturesSpike.push_back(Texture());
 	texturesSpike[0].id = tex6;
 	texturesSpike[0].type = "texture_diffuse";
 
+
+	// Create Obj files - easier :)
+	// we can add here our textures :)
 	MeshLoaderObj loader;
 	Mesh sun = loader.loadObj("Resources/Models/sphere.obj");
-
-	// plane mesh for ground
+	Mesh box = loader.loadObj("Resources/Models/cube.obj", textures);
 	Mesh plane = loader.loadObj("Resources/Models/plane_mars.obj", textures3);
-
-	// fence mesh ahh 
 	Mesh fenceMesh = loader.loadObj("Resources/Models/fence.obj", textures2);
-
 	// small platform mesh (reuse plane geometry but with platform texture)
 	Mesh platformMesh = loader.loadObj("Resources/Models/floatingplatform.obj", textures4);
-
-	// mountain mesh
 	Mesh mountainMesh = loader.loadObj("Resources/Models/Rockwall.obj", textures5);
-
-
 	// create a Platform from the plane mesh (keeps rendering + collision logic encapsulated)
 	g_platform = new Platform(plane, "Ground");
 	g_platform->setPosition(glm::vec3(0.0f, 1.0f, 0.0f));
+	// scale the plane larger so it's easier to stand on
 	g_platform->setScale(glm::vec3(300.0f, 2.0f, 1000.0f));
 
 	// create floating platforms in the air
@@ -181,13 +177,13 @@ int main()
 	platform6->setScale(glm::vec3(13.0f, 10.0f, 13.0f));
 
 
-	//fence in the middle of the scene , big flat box
+
 	fence = new Platform(fenceMesh, "fence");
 	fence->setPosition(glm::vec3(60.0f, -1.0f, -200.0f));
 	fence->setScale(glm::vec3(175.0f, 25.0f, 20.0f));
 
 
-	//mountain arround gameplay area acting as walls
+
 	mountain1 = new Platform(mountainMesh, "Mountain1");
 	mountain1->setPosition(glm::vec3(100.0f, 0.0f, 100.0f));
 	mountain1->setScale(glm::vec3(250.0f, 250.0f, 250.0f));
@@ -223,12 +219,12 @@ int main()
 	mountain6->setScale(glm::vec3(200.0f, 400.0f, 200.0f));
 	mountain6->setRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 
-	// spike mesh
-	Mesh spikeMesh = loader.loadObj("Resources/Models/spikes.obj", texturesSpike); 
+
+	// NEW: Create spike hazards
+	Mesh spikeMesh = loader.loadObj("Resources/Models/spikes.obj", texturesSpike); // Assuming spike uses rock texture
 	spike1 = new Platform(spikeMesh, "Spike1");
 	spike1->setPosition(glm::vec3(-100.0f, 1.0f, -200.0f));
 	spike1->setScale(glm::vec3(50.0f, 5.0f, 25.0f));
-	//if hazard , player will reset upon collision
 	spike1->setIsHazard(true);
 	
 	
@@ -241,6 +237,10 @@ int main()
 	spike3->setPosition(glm::vec3(9.0f, 49.0f, -196.0f));
 	spike3->setScale(glm::vec3(5.0f, 5.0f, 5.0f));
 	spike3->setIsHazard(true);
+
+	
+	
+
 
 	// Register all platforms with the collision manager
 	collisionManager.addCollidable(g_platform);
@@ -260,12 +260,12 @@ int main()
 	collisionManager.addCollidable(mountain5);
 	collisionManager.addCollidable(mountain6);
 	
-	
+	// NEW: Register spikes as hazards
 	collisionManager.addCollidable(spike1);
 	collisionManager.addCollidable(spike2);
     collisionManager.addCollidable(spike3);
 
-	// 0 makes most sense for our game
+	// Optional: set collision margin and enable debug output
 	collisionManager.setCollisionMargin(0);
 	// Disable verbose debug output in release runs to avoid console flooding and input lag
 	collisionManager.setDebugOutput(false);  // Changed from true to false to reduce mouse-look lag
@@ -321,7 +321,8 @@ int main()
 		glUniform3f(glGetUniformLocation(shader.getId(), "lightPos"), lightPos.x, lightPos.y, lightPos.z);
 		glUniform3f(glGetUniformLocation(shader.getId(), "viewPos"), camera.getCameraPosition().x, camera.getCameraPosition().y, camera.getCameraPosition().z);
 
-	
+		box.draw(shader);
+
 		///// Draw platforms via class //////
 		// main ground platform
 		g_platform->draw(shader, ViewMatrix, ProjectionMatrix);
@@ -354,6 +355,7 @@ int main()
 	collisionManager.clearAll();
 
 	// cleanup
+		// In cleanup section:
 	delete spike1;
 	spike1 = nullptr;
 	delete spike2;
@@ -392,6 +394,13 @@ int main()
 	delete fence;
 	fence = nullptr;
 
+	// NEW: Cleanup spike hazards
+	delete spike1;
+	spike1 = nullptr;
+	delete spike2;
+	spike2 = nullptr;
+	delete spike3;
+	spike3 = nullptr;
 }
 
 //basically game loop input processing
@@ -477,8 +486,9 @@ void processKeyboardInput()
 	{
 		const auto& info = collisionManager.getLastCollisionInfo();
 
-		// Check for hazard collision (no dynamic_cast needed)
-		if (info.collidable && info.collidable->isHazard())
+		// Check for hazard collision
+		Platform* hitPlatform = dynamic_cast<Platform*>(info.collidable);
+		if (hitPlatform && hitPlatform->getIsHazard())
 		{
 			resetPlayer();
 			return;
@@ -497,7 +507,7 @@ void processKeyboardInput()
 		}
 
 		// For ANY collision (including side walls), check if we're still on ground
-		// This is crucial, wall collisions should NOT break ground contact
+		// This is crucial - wall collisions should NOT break ground contact!
 		if (!groundContactThisFrame)
 		{
 			glm::vec3 probePos = proposed;
@@ -521,7 +531,7 @@ void processKeyboardInput()
 	}
 	else
 	{
-		// No collision, check if we're still on ground (edge detection)
+		// No collision - check if we're still on ground (edge detection)
 		if (playerPhysics.isGrounded && playerPhysics.velocity.y <= 0.1f)
 		{
 			glm::vec3 probePos = proposed;
@@ -539,13 +549,13 @@ void processKeyboardInput()
 		}
 	}
 
-	// update grounded state
+	// Update grounded state
 	if (!groundContactThisFrame)
 	{
 		playerPhysics.isGrounded = false;
 	}
 
-	// apply the resolved position to the camera
+	// Apply the resolved position to the camera
 	camera.setCameraPosition(proposed);
 
 	// Print player status to console

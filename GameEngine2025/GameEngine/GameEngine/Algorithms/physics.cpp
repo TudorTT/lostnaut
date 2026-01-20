@@ -19,7 +19,6 @@ glm::vec3 PlayerPhysics::update(float deltaTime)
     if (deltaTime > 0.1f) deltaTime = 0.1f;
     
     // Apply gravity if not grounded
-	// framerate-independent gravity application
     if (!isGrounded)
     {
         velocity.y -= gravity * deltaTime;
