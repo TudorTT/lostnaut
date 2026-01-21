@@ -45,6 +45,30 @@
     <ClCompile Include="Algorithms\physics.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Objects\alien.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_glfw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_impl_opengl3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_widgets.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_draw.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui_tables.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="imgui.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Objects\skybox.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Graphics\window.h">
@@ -77,6 +101,45 @@
     <ClInclude Include="Algorithms\physics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Objects\alien.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imconfig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_glfw.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_opengl3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_internal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_rectpack.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_textedit.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imgui_impl_opengl3_loader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="imstb_truetype.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\audio.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shaders\irrKlang.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Objects\skybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Shaders\vertex_shader.glsl" />
@@ -85,6 +148,10 @@
     <None Include="Shaders\sun_vertex_shader.glsl" />
     <None Include="Shaders\terrain_vertex.glsl" />
     <None Include="Shaders\terrain_fragment.glsl" />
+    <None Include="Shaders\hud_vertex.glsl" />
+    <None Include="Shaders\hud_fragment.glsl" />
+    <None Include="Shaders\skybox_vertex.glsl" />
+    <None Include="Shaders\skybox_fragment.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Resources\Textures\wood.bmp">
@@ -120,8 +187,65 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Resources\Models\spikes.obj" />
+    <Image Include="Resources\Textures\alien.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\dog.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\dogtreat.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Models\alien.obj" />
+    <Image Include="Resources\Models\dog.obj" />
+    <Image Include="Resources\Models\DogTreat.obj" />
+    <Image Include="Resources\Textures\epress.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\red\bkg1_back6.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\red\bkg1_bottom4.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\red\bkg1_front5.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\red\bkg1_left2.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\red\bkg1_right1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\red\bkg1_top3.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\red\bkg1_bottom4.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\red\bkg1_back6.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\red\bkg1_front5.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\red\bkg1_left2.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\red\bkg1_top3.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Resources\Textures\red\bkg1_right1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <Object Include="Resources\Models\sphere.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Media Include="Resources\sleep_short.mp3" />
+    <Media Include="Resources\sleep_short.wav">
+      <Filter>Resource Files</Filter>
+    </Media>
   </ItemGroup>
 </Project>

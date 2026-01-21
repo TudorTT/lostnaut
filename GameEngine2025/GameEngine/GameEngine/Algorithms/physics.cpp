@@ -4,7 +4,7 @@
 
 PlayerPhysics::PlayerPhysics()
     : gravity(30.0f)
-    , jumpForce(40.0f)
+    , jumpForce(35.0f)
     , walkSpeed(30.0f)
     , runSpeed(60.0f)
     , velocity(0.0f)

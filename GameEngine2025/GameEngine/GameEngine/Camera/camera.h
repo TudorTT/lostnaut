@@ -29,6 +29,9 @@ public:
 
 	// small setter to allow external sync (e.g. camera-as-player)
 	void setCameraPosition(const glm::vec3& pos);
+	
+	// Set the camera's view direction and update internal rotation angles
+	void setCameraViewDirection(const glm::vec3& direction);
 
 	void keyboardMoveFront(float cameraSpeed);
 	void keyboardMoveBack(float cameraSpeed);

@@ -39,6 +39,22 @@ void Camera::setCameraPosition(const glm::vec3& pos)
 	cameraPosition = pos;
 }
 
+void Camera::setCameraViewDirection(const glm::vec3& direction)
+{
+	// Normalize the input direction
+	cameraViewDirection = glm::normalize(direction);
+	
+	// Calculate pitch (rotationOx) from the y component
+	rotationOx = glm::degrees(asin(cameraViewDirection.y));
+	
+	// Calculate yaw (rotationOy) from x and z components
+	rotationOy = glm::degrees(atan2(cameraViewDirection.z, cameraViewDirection.x));
+	
+	// Recalculate right and up vectors
+	cameraRight = glm::normalize(glm::cross(cameraViewDirection, glm::vec3(0.0f, 1.0f, 0.0f)));
+	cameraUp = glm::normalize(glm::cross(cameraRight, cameraViewDirection));
+}
+
 void Camera::keyboardMoveFront(float cameraSpeed)
 {
 	cameraPosition += cameraViewDirection * cameraSpeed;
