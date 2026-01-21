@@ -1,9 +1,0 @@
-﻿  skybox.cpp
-  main.cpp
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.26100.0\shared\minwindef.h(130,9): warning C4005: 'APIENTRY': macro redefinition
-  (compiling source file 'main.cpp')
-      C:\Users\Tudor Todasca\Downloads\GameEngine2025 (1)\GameEngine2025\GameEngine\Dependencies\GLFW\include\glfw3.h(98,11):
-      see previous definition of 'APIENTRY'
-  
-  Generating Code...
-  GameEngine.vcxproj -> C:\Users\Tudor Todasca\Downloads\GameEngine2025 (1)\GameEngine2025\GameEngine\Debug\GameEngine.exe

@@ -10,3 +10,63 @@
 *.vsdix
 *.db-shm
 *.db-val
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+## Visual C++ cache files
+ipch/
+*.aps
+*.ncb
+*.opendb
+*.opensdf
+*.sdf
+*.cachefile
+*.VC.db
+*.VC.VC.opendb
+
+## Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+## Precompiled Headers
+*.gch
+*.pch
+
+## Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+## Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+## Executables
+*.exe
+*.out
+*.app
+*.i*86
+*.x86_64
+*.hex
+
+## Database files
+*.db
+
+## Diagnostic files
+*.diagsession
+
+## Temporary files
+*.tmp
+*.ipch
+*.ilk
+*.tlog
