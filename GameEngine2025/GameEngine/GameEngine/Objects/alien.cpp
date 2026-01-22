@@ -29,9 +29,7 @@ void Alien::update(float deltaTime, CollisionManager& collisionManager) {
     if (dead)
         return;
 
-    // Debug Print every ~60 frames or similar (using simple counter or just spam
-    // for now since user is waiting) Actually, let's just print if Y is weird or
-    // every frame.
+  
    
 
     // Clamp deltaTime to prevent tunneling on lag spikes
@@ -48,15 +46,8 @@ void Alien::update(float deltaTime, CollisionManager& collisionManager) {
     nextPos.x += moveSpeed * direction * dt;
     nextPos.y += verticalVelocity * dt;
 
-    // 3. Resolve Collisions (Ground & Walls)
-    // We use the Alien's height as "eyeHeight" so physics system knows where feet
-    // are. Assuming position is "Head/Center", feet are at position.y - height.
-    // Actually, usually models have origin at feet. collisionManager expects
-    // 'point' to be head, and 'feet' to be point.y - eyeHeight. Let's assume
-    // 'position' is at the bottom (feet). So we pass position.y + height as the
-    // point? Or if position is center. The code used 'position' as the point to
-    // resolve. Let's treat 'position' as feet. Pass 'probe' =
-    // position + height.
+
+  
 
     glm::vec3 collisionProbe = nextPos;
     collisionProbe.y += height; // Use actual height instead of hardcoded 5.0f
@@ -80,13 +71,6 @@ void Alien::update(float deltaTime, CollisionManager& collisionManager) {
             cliffProbe.y += 5.0f;               // Eye height
             cliffProbe.x += (direction * 3.0f); // Look ahead
 
-            // We want to check if there is ground *below* the look-ahead point.
-            // The resolve function checks if the point is inside a box.
-            // To check for a cliff, we want to see if a point slightly *below* the
-            // floor level collides with something. Currently feet are at nextPos.y.
-            // We want to check at nextPos.y - 1.0f.
-            // So 'Head' for probe would be at (nextPos.y - 1.0f) + 5.0f = nextPos.y
-            // + 4.0f
 
             glm::vec3 floorCheck = cliffProbe;
             floorCheck.y -= 2.0f; // Lower slightly
