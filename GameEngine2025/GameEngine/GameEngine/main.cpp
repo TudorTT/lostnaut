@@ -99,7 +99,7 @@ Platform* spike1 = nullptr;
 Platform* spike2 = nullptr;
 Platform* spike3 = nullptr;
 Platform* spaceshipPlatform = nullptr;
-Platform* dogPlatform = nullptr; // Dog Object (Static)
+Platform* dogPlatform = nullptr; // Dog Object
 
 std::vector<Alien*> aliens; // Alien enemies
 
@@ -261,7 +261,7 @@ int main()
 
 	// Plant Platform initialization
 	plantPlatform = new Platform(platformMesh, "PlantPlatform");
-	plantPlatform->setPosition(glm::vec3(-93.14f, 60.0f, -193.34f)); // 1 unit below the plant
+	plantPlatform->setPosition(glm::vec3(-93.14f, 60.0f, -193.34f)); 
 	plantPlatform->setScale(glm::vec3(10.0f, 5.0f, 10.0f));
 
 	//fence in the middle of the scene, big flat box
@@ -324,7 +324,7 @@ int main()
 	spaceshipPlatform->setScale(glm::vec3(10.0f, 10.0f, 10.0f));
 	spaceshipPlatform->setUseOBBCollision(true);
 
-	// Dog Object (Static)
+	// Dog Object 
 	dogPlatform = new Platform(dogModel, "Dog");
 	glm::vec3 dogPos = spaceshipPos;
 	dogPos.x += 15.0f; // Next to ship
