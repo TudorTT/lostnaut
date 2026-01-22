@@ -7,7 +7,7 @@
 #include "Model Loading\texture.h"
 #include "Objects\alien.h"
 #include "Objects\platform.h"
-#include "Objects\skybox.h" // <--- Add include for skybox
+#include "Objects\skybox.h" 
 #include "Shaders\shader.h"
 #include "imgui.h"
 #include "imgui_impl_glfw.h"
@@ -58,7 +58,7 @@ glm::vec3 lightPos = glm::vec3(0.0f, 300.0f, -300.0f);
 
 // Item Positions
 glm::vec3 plantPos = glm::vec3(-93.14f, 62.0f, -193.34f);
-glm::vec3 fuelPos = glm::vec3(6.33f, 3.5f, -406.48f); // Renamed from coinPos
+glm::vec3 fuelPos = glm::vec3(6.33f, 3.5f, -406.48f); 
 glm::vec3 treatPos = glm::vec3(105.08f, 50.74f, -199.93f);
 // Spaceship Position
 glm::vec3 spaceshipPos = glm::vec3(-30.0f, 10.0f, -30.0f);
