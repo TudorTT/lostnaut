@@ -341,7 +341,7 @@ int main()
 	collisionManager.addCollidable(platform4);
 	collisionManager.addCollidable(platform5);
 	collisionManager.addCollidable(platform6);
-	collisionManager.addCollidable(plantPlatform); // Register collision
+	collisionManager.addCollidable(plantPlatform); 
 	collisionManager.addCollidable(fence);
 	collisionManager.addCollidable(mountain1);
 	collisionManager.addCollidable(mountain2);
@@ -394,8 +394,6 @@ int main()
 	};
 	skybox.load(skyboxFaces);
 
-	// OR use a single texture for all faces (even easier):
-	// skybox.loadSingle("Resources/Textures/mars.bmp");
 
 	//check if we close the window or press the escape button
 	while (!window.isPressed(GLFW_KEY_ESCAPE) &&
