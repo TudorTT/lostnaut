@@ -53,9 +53,7 @@ void Alien::update(float deltaTime, CollisionManager& collisionManager) {
     collisionProbe.y += height; // Use actual height instead of hardcoded 5.0f
 
     if (collisionManager.resolvePointAgainstAll(collisionProbe, height)) {
-        // Collision Resolved!
-        // collisionProbe contains the new valid position (Head).
-        // Update nextPos (Feet)
+       
         nextPos = collisionProbe;
         nextPos.y -= height; // Use height here too
 
