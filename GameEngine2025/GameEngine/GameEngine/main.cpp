@@ -204,7 +204,7 @@ int main()
 
 	MeshLoaderObj loader;
 	Mesh sun = loader.loadObj("Resources/Models/sphere.obj");
-	Mesh box = loader.loadObj("Resources/Models/cube.obj", textures);
+	// Mesh box = loader.loadObj("Resources/Models/cube.obj", textures);
 
 	// plane mesh for ground
 	Mesh plane = loader.loadObj("Resources/Models/plane_mars.obj", textures3);
